@@ -1,4 +1,4 @@
-Python Voice Assistant
+# Python Voice Assistant
 
 This Python program runs in a Docker container and uses the host's microphone to listen for a keyword, transcribe the sentence, pass it to a Large Language Model via an API, and play the response over the host system's speakers.
 
