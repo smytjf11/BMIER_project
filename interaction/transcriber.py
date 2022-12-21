@@ -9,13 +9,10 @@ import gTTS
 
 logger = logging.getLogger(__name__)
 
-def get_config(config_file_path):
-    if config_file_path.isnull():
-        config_file_path = 'config.ini'
-
-    config = configparser.ConfigParser()
-    config.read(config_file_path)
-
+def get_config(config_file_path: str = 'config.ini') -> configparser.ConfigParser:
+    with open(config_file_path) as f:
+        config = configparser.ConfigParser()
+        config.read_file(f)
     return config
 
 def generic_handle_error(e, step):
