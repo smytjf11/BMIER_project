@@ -15,13 +15,15 @@ def get_config(config_file_path: str = 'config.ini') -> configparser.ConfigParse
         config.read_file(f)
     return config
 
-def generic_handle_error(e, step):
-    # String to describe the error
-    errorString = f'Error: {e} occurred in step: {step}'
+class VoiceAssistantError(Exception):
+    def __init__(self, message: str, step: str):
+        self.message = message
+        self.step = step
 
-    # Print the error message to the console and write it to the log
-    print(errorString)
-    logger.error(errorString)
+def generic_handle_error(e: VoiceAssistantError):
+    error_string = 'Error: {} occurred in step: {}'.format(e.message, e.step)
+    print(error_string)
+    logger.error(error_string)
 
 
 import pocketsphinx
