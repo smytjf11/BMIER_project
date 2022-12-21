@@ -1,0 +1,3 @@
+# Bonnots Mill Institute for Edge Research
+
+The mission of the Bonnots Mill Institute for Edge Research is to advance the frontiers of knowledge and technology through innovative research and collaboration, and to apply our research findings to solve real-world problems and improve the lives of people in our community and beyond. We will achieve this mission through a commitment to excellence, integrity, and social responsibility, and by fostering a culture of collaboration, creativity, and continuous learning.
