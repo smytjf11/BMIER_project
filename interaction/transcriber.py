@@ -15,13 +15,15 @@ def get_config(config_file_path: str = 'config.ini') -> configparser.ConfigParse
         config.read_file(f)
     return config
 
-def generic_handle_error(e, step):
-    # String to describe the error
-    errorString = f'Error: {e} occurred in step: {step}'
+class VoiceAssistantError(Exception):
+    def __init__(self, message: str, step: str):
+        self.message = message
+        self.step = step
 
-    # Print the error message to the console and write it to the log
-    print(errorString)
-    logger.error(errorString)
+def generic_handle_error(e: VoiceAssistantError):
+    error_string = 'Error: {} occurred in step: {}'.format(e.message, e.step)
+    print(error_string)
+    logger.error(error_string)
 
 
 import pocketsphinx
@@ -34,36 +36,37 @@ async def get_audio_from_microphone(keyword):
     decoder = pocketsphinx.Decoder(config)
 
     # Set up the microphone input
-    mic = pocketsphinx.AudioFile(16000, None, True)
-    mic.start_recording()
+    with pocketsphinx.AudioFile(16000, None, True) as mic:
+        mic.start_recording()
 
-    # Wait for the keyword to be spoken
-    decoder.start_utt()
-    while True:
-        buf = mic.get_audio()
-        if buf:
-            decoder.process_raw(buf, False, False)
-        else:
-            break
-        if decoder.hyp() is not None:
-            break
-    decoder.end_utt()
-
-    # Start recording audio
-    audio = b''
-    decoder.start_utt()
-    while True:
-        buf = mic.get_audio()
-        if buf:
-            decoder.process_raw(buf, False, False)
-            audio += buf
-        else:
-            break
-        if decoder.hyp() is not None:
-            # Check if the keyword has been spoken again (indicating a pause)
-            if decoder.hyp().hypstr == keyword:
+        # Wait for the keyword to be spoken
+        decoder.start_utt()
+        while True:
+            buf = mic.get_audio()
+            if buf:
+                decoder.process_raw(buf, False, False)
+            else:
                 break
-    decoder.end_utt()
+            if decoder.hyp() is not None:
+                break
+        decoder.end_utt()
+
+        # Start recording audio
+        audio = b''
+        decoder.start_utt()
+        while True:
+            buf = mic.get_audio()
+            if buf:
+                decoder.process_raw(buf, False, False)
+                audio += buf
+            else:
+                break
+            if decoder.hyp() is not None:
+                # Check if the keyword has been spoken again (indicating a pause)
+                if decoder.hyp().hypstr == keyword:
+                    break
+        decoder.end_utt()
+
 
     # Stop recording and return the audio
     mic.stop_recording()
