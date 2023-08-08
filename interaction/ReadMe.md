@@ -7,8 +7,6 @@ This Python program runs in a Docker container and uses the host's microphone to
 Before running this program, make sure you have the following installed on your system:
 
 - Docker
-- Python 3
-- Any necessary Python packages, such as `speechrecognition` and `pyaudio`
 
 ## Running the Program
 

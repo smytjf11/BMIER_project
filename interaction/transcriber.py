@@ -1,18 +1,21 @@
-from urllib.error import HTTPError
-import asyncio
-import openai
-import pocketsphinx
-import configparser
-import logging
-import retrying
-import gTTS
+from urllib.error import HTTPError #This import statement allows you to import the HTTPError class from the urllib.error module. This class represents an HTTP error that occurred when attempting to fetch a URL. You can use it to handle errors that may occur when making HTTP requests.
+import asyncio # This import statement brings in the asyncio module, which provides support for asynchronous programming in Python. You can use asyncio to write concurrent code using the async and await keywords.
+import openai # This import statement brings in the openai module, which is a Python wrapper for the OpenAI API. You can use this module to access the various language processing services provided by OpenAI, such as text generation and machine translation.
+import pocketsphinx # This import statement brings in the pocketsphinx module, which is a Python wrapper for the PocketSphinx speech recognition engine. You can use this module to perform speech-to-text conversion, such as transcribing spoken words into written text.
+import configparser # This import statement brings in the configparser module, which provides support for reading and writing configuration files. You can use this module to parse configuration files that contain sections and options, and access their values.
+import logging # This import statement brings in the logging module, which provides support for logging messages and events in Python. You can use this module to log messages at different levels of severity (e.g. debug, info, warning, error) and output them to various destinations (e.g. console, file, network).
+import retrying # This import statement brings in the retrying module, which provides support for retrying function calls in the event of an error. You can use this module to define retry strategies (e.g. maximum number of retries, retry on specific exceptions) and apply them to function calls using the @retrying.retry decorator.
+
 
 logger = logging.getLogger(__name__)
 
-def get_config(config_file_path: str = 'config.ini') -> configparser.ConfigParser:
-    with open(config_file_path) as f:
-        config = configparser.ConfigParser()
-        config.read_file(f)
+def get_config(config_file_path):
+    if config_file_path.isnull():
+        config_file_path = 'config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(config_file_path)
+
     return config
 
 def generic_handle_error(e, step):

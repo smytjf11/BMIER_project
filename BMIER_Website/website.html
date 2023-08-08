@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bonnots Mill Institute for Edge Research</title>
+        <style>
+            body {
+                background-color: rgb(175, 175, 231),
+                font-family: "Times New Roman", serif;
+            }
+            h1 {
+                font-family: "Times New Roman", serif;
+            }
+            .logo {
+                height: 50px;
+                width: auto;
+            }
+            /* Set the width to 100% for screens smaller than 1200 pixels */
+            @media (max-width: 3000px) {
+                nav {
+                        width: 100%;
+                    }
+                }
+            /* Set the width to 1200 pixels for screens larger than 1200 pixels */
+            @media (min-width: 3000px) {
+                nav {
+                        width: 3000px;
+                    }
+                }   
+            .right-justified {
+                justify-content: right;
+            }
+            .log-in-button {
+                width: 100px;
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    </head>
+    <body>
+        <header>
+            <div class="container">
+              <div class="row">
+                <div class="col-md-9">
+                    <nav>
+                        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                            <div class="container">
+                                <!-- Brand/logo -->
+                                <a class="navbar-brand" href="#">
+                                    <img src="BMIER LOGO.png" alt="BMIER logo" class="logo">
+                                </a>
+                                <!-- Nav links -->
+                                <div class="navbar-collapse">
+                                    <ul class="navbar-nav ml-auto">
+                                        <li class="nav-item nav-item-active">
+                                              <a class="nav-link" href="#">Home</a>
+                                        </li>
+                                        <li class="nav-item">
+                                              <a class="nav-link" href="#">About</a>
+                                        </li>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Research
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <a class="nav-link dropdown-item" href="#">Artificial Intelligence</a>
+                                                <a class="nav-link dropdown-item" href="#">Agricultural Technology</a>
+                                                <a class="nav-link dropdown-item" href="#">High-Performance Computing</a>
+                                                <a class="nav-link dropdown-item" href="#">Environmental Science</a>
+                                                <a class="nav-link dropdown-item" href="#">Human-Computer Interaction</a>
+                                                <a class="nav-link dropdown-item" href="#">Robotics</a>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <form class="form-inline my-2 my-lg-0 right-justified">
+                                                <div class="form-group mx-sm-3">
+                                                    <label for="email" class="sr-only">Email</label>
+                                                    <input type="email" class="form-control w-30" id="email" placeholder="Email">
+                                                    <button type="submit" class="btn btn-primary log-in-button">Log in</button>
+                                                </div>
+                                                <div class="form-group mx-sm-3">
+                                                    <label for="password" class="sr-only">Password</label>
+                                                    <input type="password" class="form-control w-30" id="password" placeholder="Password">
+                                                    <button type="submit" class="btn btn-primary log-in-button">Sign up</button> <!-- ml-auto -->
+                                                </div>      
+                                            </form>
+                                        </li>                                                                                                                               
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>                          
+                    </nav>
+                    <ul class="social-media-links">
+                        <!-- Social media links placeholder -->
+                    </ul>
+                    <p class="contact-info">
+                        <!-- Contact information placeholder -->
+                    </p>
+                </div>
+              </div>
+            </div>
+          </header>          
+        <main>
+            <h1>Bonnots Mill Institute for Edge Research</h1>
+            <p>The mission of the Bonnots Mill Institute for Edge Research is to advance the frontiers of knowledge and technology through innovative research and collaboration, and to apply our research findings to solve real-world problems and improve the lives of people in our community and beyond. We will achieve this mission through a commitment to excellence, integrity, and social responsibility, and by fostering a culture of collaboration, creativity, and continuous learning.</p>
+            <img src="image.jpg" alt="An image">
+            <h2>Core Research Areas</h2>
+            <ul>
+                <li>Artificial intelligence and Machine Learning: Research on topics such as natural language processing, computer vision, and machine learning algorithms.</li>
+                <li>Agricultural technology: Research on the use of artificial intelligence and other technologies to improve crop yields, optimize resource use, and increase efficiency in the agricultural sector.</li>
+                <li>High-performance computing: Research on the development of advanced computing systems and algorithms that can handle large amounts of data and complex calculations.</li>
+                <li>Environmental science and conservation: Research on topics such as climate change, biodiversity, and sustainable resource management.</li>
+                <li>Human-computer interaction: Research on how people interact with computer systems, and how to design more intuitive and user-friendly interfaces.</li>
+                <li>Robotics: Research on the development of autonomous robots and the integration of robots into various industries and applications.</li>
+            </ul>
+        </main>
+    <footer>
+        <!-- Add the footer content here -->
+    </footer>
+  </body>
+</html>
