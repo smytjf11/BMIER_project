@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  
+  <body>
+    <header>
+      <h1>Chat Application</h1>
+    </header>
+
+    <main>
+      <section id="chat-section">
+        <div id="chat-history">
+          <div id="chat-tree">
+            <!-- chat history tree view will be populated here -->
+          </div>
+        </div>
+
+        <div class="input-controls">
+          <input id="user-input" type="text" placeholder="Type your message here...">
+          <a href="#" id="branch-button">
+            <img src="{{ url_for('static', filename='branch.png') }}" alt="branch">
+          </a>
+          <select id="conversation">
+            {% for conversation_id in conversation_ids %}
+            <option value="{{ conversation_id }}">{{ conversation_id }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </section>
+
+      <section id="button-section">
+        <button id="submit">Submit</button>
+        <button id="new-chat">New Chat</button>
+        <button id="archive">Archive</button>
+      </section>
+    </main>
+
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+  </body>
+</html>
