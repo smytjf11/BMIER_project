@@ -151,8 +151,16 @@ def get_summary_data(self, conversation_id):
     # It will also update the chat summary in the database
     conversation_id = conversation_id
 
-    # Get the chat_summary from the mongo database
-    conversation = self.collection.find_one({"conversation_id": conversation_id}, {"chat_summary": 1, "messages": 1, "_id": 0})
+
+        
+
+    # Get the chat_summary from the mongo database for the selected conversation id
+    # include the chat_summary and messages fields in the data returned
+    # also get the parent_conversation_id field because it will be used to check if the conversation is a branch conversation
+    conversation = self.collection.find_one({"conversation_id": conversation_id}, {"chat_summary": 1, "messages": 1, "parent_conversation_id": 1, "_id": 0})
+
+
+
 
     # Extract chat_summary
     summary_str = conversation["chat_summary"] if "chat_summary" in conversation else ""
@@ -162,8 +170,33 @@ def get_summary_data(self, conversation_id):
     if len(messages) > config['memory_length']:
         messages = messages[-config['memory_length']:]
 
+    # Check if the conversation is a branch conversation
+    if conversation["parent_conversation_id"] != conversation_id:
+        # get the parent conversation document
+        parent_conversation = self.collection.find_one({"conversation_id": conversation["parent_conversation_id"]}, {"messages": 1, "_id": 0})
+        # look for a message in the parent conversation document that has the conversation_id of the branch conversation as the value of the "text" field and g
+        for message in parent_conversation["messages"]:
+            if message["text"] == conversation_id:
+                # get the index of the message in the parent conversation document
+                message_index = parent_conversation["messages"].index(message)
+                # get all of the messages before the message with the conversation_id of the branch conversation
+                # ie every message in the parent conversation document before the message with the conversation_id of the branch conversation
+                # we want the text of these messages to be included in the summary
+                # the goal is to have not only the messages in the branch conversation but also the messages in the parent conversation that led to the branch conversation
+                # to do this we will get the index of the message with the conversation_id of the branch conversation in the parent conversation document
+                # then we will get all of the messages in the parent conversation document before the message with the conversation_id of the branch conversation
+                # then we will add the messages in the branch conversation to the end of the messages in the parent conversation document before the message with the conversation_id of the branch conversation
+
+                # get the messages in the parent conversation document before the message with the conversation_id of the branch conversation
+                messages = parent_conversation["messages"][:message_index]
+                # get the messages in the branch conversation
+                branch_messages = conversation["messages"]
+                # add the branch messages  to the end of the messages in the parent conversation document before the message with the conversation_id of the branch conversation
+                messages.extend(branch_messages)
+
     # Convert the messages into a single string
     messages_str = "\r".join([message["text"] for message in messages])
+    print ("messages_str: ", messages_str)
     return summary_str, messages_str
 
 
