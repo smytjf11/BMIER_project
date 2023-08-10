@@ -29,8 +29,6 @@ def load_config():
     return config
 
 config = load_config()
-print(" memory length is ", config['memory_length'])
-print(" summary update interval is ", config['summary_update_interval'])
 
 model = config['ai_model']
 module_name = f"{model.replace('.', '_')}_module"
@@ -73,7 +71,6 @@ class FlaskGui(MethodView):
         
 
     def get(self, conversation_id=None):
-        print("requested URL:", request.url)
         if request.path == '/':
             return self.index()
         elif request.path == '/chat':
@@ -115,9 +112,6 @@ class FlaskGui(MethodView):
             selected_branch_conversation_id = data['branch_conversation_id']
             # After setting selected_branch_conversation_id
             conversation_id = data['conversation_id']
-            print ("set_branch_conversation_id has been called")
-            print("conversation id is ", conversation_id)
-            print("selected branch conversation id is ", selected_branch_conversation_id)
             return {'status': 'success'}
         elif data is not None and 'selected_branch_conversation_id' not in data:
             selected_branch_conversation_id = None
@@ -130,9 +124,6 @@ class FlaskGui(MethodView):
 
         conversation_id = data.get('conversation_id', conversation_id)  # update the conversation_id if it is provided
         selected_branch_conversation_id = data.get('branch_id', selected_branch_conversation_id)  # update the branch_id if it is provided
-        
-        print ("updated conversation id is ", conversation_id)
-        print ("updated branch conversation id is ", selected_branch_conversation_id)
 
         return jsonify({'message': 'Selection updated'}), 200
 
@@ -145,8 +136,6 @@ class FlaskGui(MethodView):
         selected_item_id = data['selected_item_id']
         # Do something with the selected item or store it as needed
         # set the selected item to the global variable
-        print("Selected item:", selected_item)
-        print("Selected item id:", selected_item_id)
         return jsonify({"status": "success"})
 
 
@@ -168,7 +157,6 @@ class FlaskGui(MethodView):
         global selected_item
         global selected_branch_conversation_id
 
-        print("Initial conversation_id:", conversation_id)  # Debug print statement
 
         
         # check if the current conversation is already in the database
@@ -178,7 +166,6 @@ class FlaskGui(MethodView):
         else:
             conversation_exists = True
 
-        print ("conversation exists is ", conversation_exists)
         if selected_branch_conversation_id is not None:
             conversation_id = selected_branch_conversation_id
 
@@ -187,11 +174,6 @@ class FlaskGui(MethodView):
         else:
             is_branch = False
 
-        print("is_branch:", is_branch)  # Debug print statement
-
-        
-
-        print("Updated conversation_id:", conversation_id)  # Debug print statement
 
         if not input_text:
             return
@@ -264,20 +246,17 @@ class FlaskGui(MethodView):
 
 
     def set_dropdown(self):
-        print ("set_dropdown function called")
         # this function is called when the set dropdown button is clicked. it is passed the self variable and database
         # convert to use flask instead of qt
         global conversation_id
 
         # call the get_dropdown_conversation_ids function from the database file
         dropdown_conversation_ids = database_module.get_dropdown_conversation_ids(self)
-        print ("dropdown_conversation_ids is ", dropdown_conversation_ids)
 
         # get the conversation ids from the dropdown_conversation_ids variable
         conversation_ids = dropdown_conversation_ids
         # set the global conversation id variable to the first conversation id
         conversation_id = conversation_ids[0][0]
-        print ("conversation_id is ", conversation_ids)
         return conversation_ids
     
 

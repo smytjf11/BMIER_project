@@ -26,8 +26,6 @@ def load_config():
     return config
 
 config = load_config()
-print(" memory length is ", config['memory_length'])
-print(" summary update interval is ", config['summary_update_interval'])
 
 
 
@@ -208,7 +206,6 @@ class MainWindow(QMainWindow):
         else:
             selected_item = text
 
-        print("global selected item is: " + selected_item)
         return selected_item
 
 
@@ -261,8 +258,7 @@ class MainWindow(QMainWindow):
 
         # Set the global selected_branch_conversation_id variable to the selected conversation id
         selected_branch_conversation_id = selected_conversation_id  # Add this line
-        print ("the current selected branch conversation id is: ", selected_branch_conversation_id)
-        print ("the current conversation id is: ", conversation_id)
+
 
 
     def set_dropdown(self):
@@ -270,7 +266,7 @@ class MainWindow(QMainWindow):
 
         # call the get_dropdown_conversation_ids function from the database file
         dropdown_conversation_ids = database_module.get_dropdown_conversation_ids(self)
-        print ("dropdown_conversation_ids is ", dropdown_conversation_ids)
+
 
         # get the conversation ids from the dropdown_conversation_ids variable
         conversation_ids = dropdown_conversation_ids
@@ -301,7 +297,6 @@ class MainWindow(QMainWindow):
         # switch the chat history to the new conversation id using the switch conversation function in this file
         self.switch_conversation()
         # set the global conversation id variable to the new conversation id
-        print ("New chat started with conversation id: " + conversation_id)
 
 
     def archive(self, conversation_id):
