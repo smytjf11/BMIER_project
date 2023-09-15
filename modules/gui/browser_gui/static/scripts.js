@@ -43,6 +43,22 @@ $(document).ready(function () {
       // Add branch conversation id to the previous message
       if (previousMessage) {
         previousMessage.attr('data-branch-conversation-id', branchConversationId);
+        // add a minus sign to the previous message to indicate that the branch is collapsable
+        // Add click event to collapse or expand branch
+        previousMessage.css('cursor', 'pointer');
+        previousMessage.click(function() {
+          // Toggle the display of all messages with the same branch conversation id accept the first one
+          const branchId = $(this).attr('data-branch-conversation-id');
+          $(`p[data-branch-conversation-id=${branchId}]:not(:first)`).toggle();
+          //add a small plus or minus sign to the first message in the branch to indicate whether the branch is collapsed or expanded
+          if ($(this).text()[0] === '-') {
+            // if the first character of the text is a minus sign, replace only the first character with a plus sign
+            $(this).text('+' + $(this).text().substring(1));
+          } else {
+            $(this).text('-' + $(this).text().substring(1));
+          }
+
+        });
       }
     } else {
       // If it's not a "Branches" message, set it as the previous message
