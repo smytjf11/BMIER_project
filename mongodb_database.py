@@ -261,7 +261,7 @@ def add_conversation_id(self, new_conversation_id):
             upsert=True
         )
 
-def create_branch(self, parent_conversation_id, selected_item, selected_item_id):
+def create_branch(self, parent_conversation_id, selected_item_id):
     global conversation_id
     # Fetch the parent conversation document from the get_conversation function in database_module.py
     parent_conversation = self.collection.find_one({"conversation_id": parent_conversation_id})

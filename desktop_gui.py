@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         self.branch_button.setIcon(QIcon('branch.png'))
         # connect the branch button to the create branch function in this file and pass the conversation id  the selected item and the selected item id
         # the selected item id is the position of the selected item in the tree view. ie the index of the selected item -1
-        self.branch_button.clicked.connect(lambda: self.create_branch(conversation_id, selected_item, self.chat_history.selectedIndexes()[0].row() - 1))
+        self.branch_button.clicked.connect(lambda: self.create_branch(conversation_id, self.chat_history.selectedIndexes()[0].row() + 1))
         user_input.addWidget(self.branch_button)
 
         # add a dropdown menu to the horizontal layout to select the conversation
@@ -131,12 +131,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     
-    def create_branch(self, parent_conversation_id, selected_item, selected_item_id):
+    def create_branch(self, parent_conversation_id,  selected_item_id):
         # this function will call the create branch function in the ai_database module
         # pass the parent conversation id and the selected item id
         # and get the branch conversation id that is returned
         global conversation_id
-        conversation_id = database_module.create_branch(self, parent_conversation_id, selected_item, selected_item_id)
+        print(parent_conversation_id, selected_item_id)
+        conversation_id = database_module.create_branch(self, parent_conversation_id, selected_item_id)
         
 
 
