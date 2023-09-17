@@ -87,6 +87,9 @@ def count_conversation_messages(self, conversation_id):
             parent_conversation = self.collection.find_one({"conversation_id": parent_conversation_id, "is_archived": 0}, {"messages": 1, "_id": 0})
             # look for a message in the parent conversation document that has the conversation_id of the branch conversation as the value of the "text" field
 
+            if parent_conversation == None:
+                return 2
+
             for message in parent_conversation["messages"]:
                 if message["text"] == conversation_id:
                     parent_messages_count = parent_conversation["messages"].index(message)
