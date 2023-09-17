@@ -88,8 +88,9 @@ class MainWindow(QMainWindow):
         # obtained from https://www.iconsdb.com/black-icons/fork-2-icon.html 
         # licensed under the MIT license
         self.branch_button.setIcon(QIcon('branch.png'))
-        # connect the branch button to the create branch function in this file and pass the conversation id and the selected item
-        self.branch_button.clicked.connect(lambda: self.create_branch( self.conversation.currentText(), selected_item))
+        # connect the branch button to the create branch function in this file and pass the conversation id  the selected item and the selected item id
+        # the selected item id is the position of the selected item in the tree view. ie the index of the selected item -1
+        self.branch_button.clicked.connect(lambda: self.create_branch(conversation_id, selected_item, self.chat_history.selectedIndexes()[0].row() - 1))
         user_input.addWidget(self.branch_button)
 
         # add a dropdown menu to the horizontal layout to select the conversation
@@ -130,12 +131,12 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     
-    def create_branch(self, parent_conversation_id, selected_item):
+    def create_branch(self, parent_conversation_id, selected_item, selected_item_id):
         # this function will call the create branch function in the ai_database module
-        # pass the parent conversation id and the selected item
+        # pass the parent conversation id and the selected item id
         # and get the branch conversation id that is returned
         global conversation_id
-        conversation_id = database_module.create_branch(self, parent_conversation_id, selected_item)
+        conversation_id = database_module.create_branch(self, parent_conversation_id, selected_item, selected_item_id)
         
 
 
@@ -267,16 +268,14 @@ class MainWindow(QMainWindow):
         # call the get_dropdown_conversation_ids function from the database file
         dropdown_conversation_ids = database_module.get_dropdown_conversation_ids(self)
 
-
         # get the conversation ids from the dropdown_conversation_ids variable
         conversation_ids = dropdown_conversation_ids
         for conversation_id in conversation_ids:
-            self.conversation.addItem(conversation_id[0])
-            
+            self.conversation.addItem(conversation_id)  # Changed this line
 
         # set the dropdown menu and global conversation id variable to the first conversation id
-        self.conversation.setCurrentText(conversation_ids[0][0])
-        conversation_id = conversation_ids[0][0]
+        self.conversation.setCurrentText(conversation_ids[0])  # Changed this line
+        conversation_id = conversation_ids[0]  # Changed this line
         
         
     
