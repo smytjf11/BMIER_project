@@ -314,7 +314,7 @@ def create_branch(self, parent_conversation_id, selected_item, selected_item_id)
         }
         self.collection.update_one(
             {"conversation_id": parent_conversation_id},
-            {"$push": {"messages": {"$each": [new_message], "$position": message_index + 1}}}
+            {"$push": {"messages": {"$each": [new_message], "$position": message_index }}}
         )
     else:
         print("Selected item not found in the parent conversation's messages")
