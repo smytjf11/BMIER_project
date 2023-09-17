@@ -43,9 +43,10 @@ $(document).ready(function () {
       // Add branch conversation id to the previous message
       if (previousMessage) {
         previousMessage.attr('data-branch-conversation-id', branchConversationId);
-    const iconElem = $('<img src="/static/arrow_left.png">');
+    const iconElem = $('<img src="/static/arrow_down.png">');
     // Add the icon to the previous message at the beginning of the message with some space between the icon and the message
     previousMessage.prepend(iconElem);
+    // Add some space between the icon and the message text and make the icon align with the text
     iconElem.css('margin-right', '10px');
     
         // Add click event to collapse or expand branch
@@ -56,10 +57,10 @@ $(document).ready(function () {
           $(`p[data-branch-conversation-id=${branchId}]:not(:first)`).toggle();
           // Toggle the display of the icon between left and down
           const icon = $(this).find('img');
-          if (icon.attr('src') === '/static/arrow_left.png') {
+          if (icon.attr('src') === '/static/arrow_right.png') {
             icon.attr('src', '/static/arrow_down.png');
           } else {
-            icon.attr('src', '/static/arrow_left.png');
+            icon.attr('src', '/static/arrow_right.png');
 
         }
 
@@ -94,7 +95,18 @@ $(document).ready(function () {
       }
     });
 
-    // overwrite the data attribute of messages that are not the first message in a branch with 0
+    
+// For each branch toggle the display of all messages with the same branch conversation id accept the first one
+    $('.message').each(function() {
+      if ($(this).attr('data-branch-conversation-id')) {
+        const branchId = $(this).attr('data-branch-conversation-id');
+        $(`p[data-branch-conversation-id=${branchId}]:not(:first)`).toggle();
+      }
+    });
+
+        
+
+// overwrite the data attribute of messages that are not the first message in a branch with 0
     let firstBranchMessage = true;
     $('.message').each(function() {
       if ($(this).attr('data-branch-conversation-id') && firstBranchMessage) {
