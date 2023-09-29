@@ -54,6 +54,10 @@ def summarize_chat(self, conversation_id):
 
         # Get the summary from the OpenAI API
         summary = ai_module.get_summary(prompt_messages)
+        # check if the summary is empty
+        if summary == "":
+            print("Summary is empty. No update.")
+            return
 
         # Update the chat summary in the mongo database
         database_module.update_summary(self, conversation_id, summary)

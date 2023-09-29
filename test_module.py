@@ -1,7 +1,6 @@
-# this module is used to house any code that deals with the kobold backend
+# this module is a test module to allow for testing of the program without the need for the gpt3.5 model
 # this includes the code to contact the model, and the code to parse the results
 # it also includes the code to format the database specifically for the model
-# kobold has multiple models, so this module is used to connect to kobold so that it can handle the different models
 
 
 

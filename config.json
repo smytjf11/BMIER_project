@@ -1,8 +1,8 @@
 {
     "chat_history": true,
-    "summary": false,
+    "summary": true,
     "branching": true,
-    "conversations": false,
+    "conversations": true,
     "memory_length": 6,
     "summary_update_interval": 6,
     "ai_model" : "chatgpt3.5",
