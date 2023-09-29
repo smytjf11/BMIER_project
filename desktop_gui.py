@@ -102,14 +102,29 @@ class MainWindow(QMainWindow):
 
         # add a dropdown menu to the horizontal layout to select the conversation
         # check if the config file has conversations enabled
-        
+        if conversations == True:
             self.conversation = QComboBox()
             # call the set dropdown function in this file
             self.set_dropdown()
-        if conversations == True:
+        
             user_input.addWidget(self.conversation)
             # connect the signal of the dropdown menu to the switch conversation function
             self.conversation.currentTextChanged.connect(self.switch_conversation)
+        else:
+            # if conversations are not enabled, but history is enabled, we need to set the conversation id to the first conversation id
+            
+            self.conversation = []
+            # call the get_dropdown_conversation_ids function from the database file
+            dropdown_conversation_ids = database_module.get_dropdown_conversation_ids(self)
+            # get the conversation ids from the dropdown_conversation_ids variable
+            conversation_ids = dropdown_conversation_ids
+            global conversation_id
+            conversation_id = conversation_ids[0]
+            # set the global conversation id variable to the first conversation id
+            # call the populate branch tree function with the selected_conversation_id
+            
+
+            
             
         # add the chat history to the chat history text box when the program starts
         # call populate branch tree function in this file and pass the conversation id
