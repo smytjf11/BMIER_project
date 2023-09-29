@@ -1,0 +1,9 @@
+chat_history.db
+test.py
+api_key.txt
+.vscode/launch.json
+__pycache__/
+.env
+notes.txt
+copy.txt
+testing/

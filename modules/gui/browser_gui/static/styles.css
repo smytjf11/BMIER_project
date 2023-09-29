@@ -1,0 +1,146 @@
+
+.input-row {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+/* style for the entire page */
+/* center the page */
+/* shrink the page to fit the content */
+
+body {
+text-align: center;
+/* add a gap at the top of the page */
+margin-top: 50px;
+
+}
+
+/* style for the submit, new chat, and archive buttons */
+#submit, #new-chat, #archive {
+display: inline-block;
+padding: 8px 12px;
+border: 1px solid #ccc;
+background-color: #555555; /* Dark Gray */
+color: white;
+text-align: center;
+text-decoration: none;
+font-size: 16px;
+transition-duration: 0.4s;
+cursor: pointer;
+border-radius: 5px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+/* add a gap at the top and bottom of the button */
+margin: auto 0;
+/* align the button with the textbox */
+vertical-align: top;
+}
+
+a#branch-button:hover, #submit:hover, #new-chat:hover, #archive:hover, #conversation:hover {
+background-color: #333333; /* Darker Gray */
+}
+
+/* style for branch button */
+a#branch-button, #conversation {
+Height: Auto;
+display: inline-block;
+padding: 8px 12px;
+border: 1px solid #ccc;
+background-color: #555555; /* Dark Gray */
+color: white;
+text-align: center;
+text-decoration: none;
+font-size: 17px;
+transition-duration: 0.4s;
+cursor: pointer;
+border-radius: 5px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+/* add a gap at the top and bottom of the button */
+margin: auto 0;
+/* align the button with the textbox */
+vertical-align: top;
+}
+
+a#branch-button:hover,  #conversation:hover {
+background-color: #333333; /* Darker Gray */
+}
+
+/* style for user input textbox */
+/* make sure the textbox is the same height as the button */
+#user-input {
+/* flex-grow: 1; */
+
+width: 100%;
+Height: 100%;
+
+border: 1px solid #ccc;
+padding: 6px 10px;
+border-radius: 5px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+font-size: 14px;
+line-height: 1.5;
+color: #333;
+background-color: #f9f9f9;
+margin: auto 0;
+/* align the textbox  with the button */
+vertical-align: top;
+}
+
+/* style for chat tree */
+#chat-tree {
+max-width: 800px;
+max-height: 300px;
+
+overflow-y: auto;
+word-wrap: break-word;
+border: 1px solid #ccc;
+padding: 15px;
+border-radius: 5px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+font-size: 14px;
+/* left align the text */
+text-align: left;
+line-height: 1.5;
+color: #333;
+background-color: #f9f9f9;
+margin-top: 10px;
+/* center the chat tree */
+margin-left: auto;
+margin-right: auto;
+}
+
+
+/* Additional styles for responsiveness */
+/* On screens that are 600px or less, make the buttons stack on top of each other instead of next to each other */
+@media (max-width: 600px) {
+  body {
+    /* add a gap at the top of the page */
+      margin-top: 20px;
+  }
+
+  #submit, #new-chat, #archive {
+    /* make the buttons stack on top of each other except for the branch button which should go next to the textbox */
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 14px;
+      display: block;  /* Stack elements vertically */
+      margin: 5px auto;  /* Center the elements */
+      text-align: center;
+
+  #user-input, #branch-button, #conversation {
+    /* put the textbox branch button and conversation dropdown on the same line */
+    /* shrink the textbox to fit the screen */
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 14px;
+      display: inline-block;
+      margin: 5px auto;  /* Center the elements */
+      text-align: center;
+      
+
+  }
+}
+}
