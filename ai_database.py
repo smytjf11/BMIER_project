@@ -78,12 +78,12 @@ def send_to_api(self, input_text, conversation_id, selected_item, selected_branc
     # Fetch the messages from the selected branch (if any) and convert them to a list of dictionaries
     if selected_branch_conversation_id:
         branch_messages = database_module.fetch_selected_branch_messages(self, selected_item, selected_branch_conversation_id)
-        cleaned_branch_messages = ai_module._clean_branch_messages(branch_messages)
+        
     else:
-        cleaned_branch_messages = []
-
+        branch_messages = []
+        
     # Combine the chat history lines and the branch messages
-    combined_messages = chat_history_lines + cleaned_branch_messages
+    combined_messages = chat_history_lines + branch_messages
     response = ai_module.construct_chat_memory(self, input_text, combined_messages)
 
     return response

@@ -19,6 +19,9 @@ config = load_config()
 
 
 def construct_chat_memory(self, input_text, combined_messages):
+        # this function is used to construct the chat memory for the model
+        # it takes in the input text, and the combined messages from the database
+        # it then combines them into a single list, and returns the list
         # If the combined messages exceed the maximum memory length, truncate the list
         if len(combined_messages) >= config['memory_length']:
             chat_memory = combined_messages[-config['memory_length']:]
@@ -44,6 +47,8 @@ def construct_chat_memory(self, input_text, combined_messages):
 
 
 def get_summary(prompt_messages):
+    # this function is used to get the summary from the model
+    # it takes in the prompt messages, and returns the summary
         summary = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=prompt_messages,
@@ -56,13 +61,6 @@ def get_summary(prompt_messages):
 
         return summary["choices"][0]["message"]["content"].replace(" \r ", "")
 
-
-def _clean_branch_messages(branch_messages):
-    cleaned_branch_messages = [
-        {"role": message["sender"], "content": message["text"]}
-        for message in branch_messages["messages"]
-    ]
-    return cleaned_branch_messages
 
 
 def _get_history(full_history):
