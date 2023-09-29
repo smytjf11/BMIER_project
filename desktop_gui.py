@@ -26,6 +26,10 @@ def load_config():
     return config
 
 config = load_config()
+chat_history = config['chat_history']
+summary = config['summary']
+branching = config['branching']
+conversations = config['conversations']
 
 
 
@@ -83,29 +87,37 @@ class MainWindow(QMainWindow):
         self.user_input = QLineEdit()
         user_input.addWidget(self.user_input)
         # add a branch button to the horizontal layout to branch the conversation
-        self.branch_button = QPushButton('')
-        # use an icon for the branch button
-        # obtained from https://www.iconsdb.com/black-icons/fork-2-icon.html 
-        # licensed under the MIT license
-        self.branch_button.setIcon(QIcon('branch.png'))
-        # connect the branch button to the create branch function in this file and pass the conversation id  the selected item and the selected item id
-        # the selected item id is the position of the selected item in the tree view. ie the index of the selected item -1
-        self.branch_button.clicked.connect(lambda: self.create_branch(conversation_id, self.chat_history.selectedIndexes()[0].row() + 1))
-        user_input.addWidget(self.branch_button)
+        # check if the config file has branching enabled
+        if branching == True:
+            self.branch_button = QPushButton('')
+            # use an icon for the branch button
+            # obtained from https://www.iconsdb.com/black-icons/fork-2-icon.html 
+            # licensed under the MIT license
+            self.branch_button.setIcon(QIcon('branch.png'))
+            # connect the branch button to the create branch function in this file and pass the conversation id  the selected item and the selected item id
+            # the selected item id is the position of the selected item in the tree view. ie the index of the selected item -1
+            self.branch_button.clicked.connect(lambda: self.create_branch(conversation_id, self.chat_history.selectedIndexes()[0].row() + 1))
+            user_input.addWidget(self.branch_button)
+
 
         # add a dropdown menu to the horizontal layout to select the conversation
-        self.conversation = QComboBox()
-        # call the set dropdown function in this file
-        self.set_dropdown()
-
-        history = ai_database.fetch_chat_history(self, conversation_id)
+        # check if the config file has conversations enabled
+        
+            self.conversation = QComboBox()
+            # call the set dropdown function in this file
+            self.set_dropdown()
+        if conversations == True:
+            user_input.addWidget(self.conversation)
+            # connect the signal of the dropdown menu to the switch conversation function
+            self.conversation.currentTextChanged.connect(self.switch_conversation)
+            
         # add the chat history to the chat history text box when the program starts
         # call populate branch tree function in this file and pass the conversation id
-        self.populate_branch_tree(conversation_id)
-
-        user_input.addWidget(self.conversation)
-        # connect the signal of the dropdown menu to the switch conversation function
-        self.conversation.currentTextChanged.connect(self.switch_conversation)
+        # check if the config file has chat history enabled
+        if chat_history == True:
+            self.populate_branch_tree(conversation_id)
+            history = ai_database.fetch_chat_history(self, conversation_id)
+               
         
         # add a horizontal layout for the submit button and the new chat button
         buttons = QHBoxLayout()
@@ -223,21 +235,32 @@ class MainWindow(QMainWindow):
         for message in conversation['messages']:
             message_item = QtGui.QStandardItem(f"{message['sender']}: {message['text']}")
             conversation_item.appendRow(message_item)
-
+        # check if the config file has branching enabled
         if 'branches' in conversation:
             for branch_id in conversation['branches']:
+                # check if the config file has branching enabled
                 branch_conversation = database_module.get_conversation(self, branch_id)
+                # check if the config file has branching enabled
+                if branching == True:
 
-                for row in range(conversation_item.rowCount()):
-                    item = conversation_item.child(row)
-                    if item.text() == f"Branches: {branch_id}":
-                        parent_item_for_branch = conversation_item.child(row - 1) if row > 0 else conversation_item
+                    for row in range(conversation_item.rowCount()):
+                        item = conversation_item.child(row)
+                        if item.text() == f"Branches: {branch_id}":
+                            parent_item_for_branch = conversation_item.child(row - 1) if row > 0 else conversation_item
 
-                        self.add_conversation_to_tree(parent_item_for_branch, branch_conversation)
-                        conversation_item.removeRow(row)
+                            self.add_conversation_to_tree(parent_item_for_branch, branch_conversation)
+                            conversation_item.removeRow(row)
 
-                        parent_item_for_branch.setData(branch_id, QtCore.Qt.UserRole)
-                        break
+                            parent_item_for_branch.setData(branch_id, QtCore.Qt.UserRole)
+                            break
+                else:
+                    # do not add the branches to the tree view
+                    # hide the Branches message
+                    for row in range(conversation_item.rowCount()):
+                        item = conversation_item.child(row)
+                        if item.text() == f"Branches: {branch_id}":
+                            conversation_item.removeRow(row)
+                            break
 
 
     def on_branch_selected(self):
