@@ -10,6 +10,10 @@ from datetime import datetime
 import json
 import importlib
 import ai_database
+import requests
+
+
+
 
 def load_config():
     with open("config.json", "r") as f:
@@ -20,19 +24,46 @@ config = load_config()
 
 
 def construct_chat_memory(self, input_text, combined_messages):
-        print("hello")
         # this function is used to construct the chat memory for the model
-        # for now return a list of the input text
-        return []
+        return input_text
 
 
 def get_response(self, chat_memory):
+        # this function is used to get the response from the model
+        # use the kobold api to get the response
+        # sent a post request to the kobold api at the generate 
+        # the address is http://127.0.0.1:5000/api
+        # the data is {"prompt": chat_memory}
+        # it should be in json format
+        # the response is the response from the model
+        # return the response
+
+        # send the post request to the kobold api using the requests library and wait for the response
+        response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": chat_memory}).json()
+        # the response is a json object, so we need to parse it
+        response = response["results"]
+        # we need to clean it up so that it is in the correct format
+        # its in the form of [{'text': ", TEXT HERE"}] we just want the part labeled TEXT HERE
+        response = response[0]["text"]
+        # remove the ", " from the beginning of the response
+        response = response[2:]
         
-        return ""
+
+
+        
+        # return the response
+        print(response)
+
+        
+        
+        
+    
+
+        
+        return response 
 
 def get_summary(prompt_messages):
         # this function is used to get the summary from the model
-        # for now return a dummy summary
 
         return ""
 
@@ -53,7 +84,6 @@ def prepare_user_message(self, input_text):
 
 def prepare_model_message(self, response):
     # use a dummy response for now
-    response = "hello"
     model_message = {
         "sender": "assistant",
         "text": response,
