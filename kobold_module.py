@@ -25,6 +25,11 @@ def construct_chat_memory(self, input_text, combined_messages):
         # for now return a list of the input text
         return []
 
+
+def get_response(self, chat_memory):
+        
+        return ""
+
 def get_summary(prompt_messages):
         # this function is used to get the summary from the model
         # for now return a dummy summary

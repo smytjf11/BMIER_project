@@ -33,6 +33,10 @@ def construct_chat_memory(self, input_text, combined_messages):
 
         # Add the user's input as a new message to the chat memory
         chat_memory.append({"role": "user", "content": input_text})
+
+        return chat_memory
+
+def get_response(self, chat_memory):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=chat_memory,
