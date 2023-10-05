@@ -92,7 +92,6 @@ def get_summary(prompt_messages):
         response = requests.post("http://127.0.0.1:5000/api/v1/generate", 
         json={
         "prompt": prompt_messages, 
-        "model": "chatgpt2",
         "temperature": 0.7,
         "max_tokens": 100,
         "frequency_penalty": 0,
