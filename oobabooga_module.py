@@ -1,7 +1,8 @@
-# this module is used to house any code that deals with the kobold backend
+# this module is used to house any code that deals with the oobabooga backend
 # this includes the code to contact the model, and the code to parse the results
 # it also includes the code to format the database specifically for the model
-# kobold has multiple models, so this module is used to connect to kobold so that it can handle the different models
+# oobabooga has multiple models, so this module is used to connect to oobabooga so that it can handle the different models
+# this is literally a copy paste of the kobold module. they appear to be the same thing. but just in case they arent, i will keep separate modules for them
 
 
 
@@ -30,15 +31,15 @@ def construct_chat_memory(self, input_text, combined_messages):
 
 def get_response(self, chat_memory):
         # this function is used to get the response from the model
-        # use the kobold api to get the response
-        # sent a post request to the kobold api at the generate 
+        # use the oobabooga api to get the response
+        # sent a post request to the oobabooga api at the generate 
         # the address is http://127.0.0.1:5000/api/v1/generate
         # the data is {"prompt": chat_memory}
         # it should be in json format
         # the response is the response from the model
         # return the response
 
-        # send the post request to the kobold api using the requests library and wait for the response
+        # send the post request to the oobabooga api using the requests library and wait for the response
         response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": chat_memory}).json()
         # the response is a json object, so we need to parse it
         response = response["results"]
