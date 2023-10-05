@@ -5,7 +5,7 @@
     "conversations": true,
     "memory_length": 6,
     "summary_update_interval": 6,
-    "ai_model" : "chatgpt3.5",
+    "ai_model" : "kobold",
     "gui" : "browser",
     "database" : "mongodb"
   }
