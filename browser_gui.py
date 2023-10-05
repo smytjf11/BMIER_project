@@ -306,4 +306,6 @@ def closeEvent(self, event):
     self.client.close()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # run the server on port 5001 due to the fact that the oobabooga api runs on port 5000
+    
+    app.run(debug=True, port=5001)
