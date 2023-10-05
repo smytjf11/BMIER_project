@@ -12,6 +12,10 @@ def load_config():
     return config
 
 config = load_config()
+chat_history = config['chat_history']
+summary = config['summary']
+branching = config['branching']
+conversations = config['conversations']
 
 
 model = config['ai_model']
@@ -54,6 +58,10 @@ def summarize_chat(self, conversation_id):
 
         # Get the summary from the OpenAI API
         summary = ai_module.get_summary(prompt_messages)
+        # check if the summary is empty
+        if summary == "":
+            print("Summary is empty. No update.")
+            return
 
         # Update the chat summary in the mongo database
         database_module.update_summary(self, conversation_id, summary)
@@ -73,18 +81,23 @@ def fetch_chat_history(self, conversation_id):
 
 def send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id=None):
     # Fetch the chat history lines from the parent conversation
-    chat_history_lines = fetch_chat_history(self, conversation_id)
+    if chat_history == True:
+        chat_history_lines = fetch_chat_history(self, conversation_id)
+    else:
+        chat_history_lines = []
 
     # Fetch the messages from the selected branch (if any) and convert them to a list of dictionaries
-    if selected_branch_conversation_id:
+    if branching == True and selected_branch_conversation_id:
         branch_messages = database_module.fetch_selected_branch_messages(self, selected_item, selected_branch_conversation_id)
-        cleaned_branch_messages = ai_module._clean_branch_messages(branch_messages)
+    
+        
     else:
-        cleaned_branch_messages = []
-
+        branch_messages = []
+        
     # Combine the chat history lines and the branch messages
-    combined_messages = chat_history_lines + cleaned_branch_messages
-    response = ai_module.construct_chat_memory(self, input_text, combined_messages)
+    combined_messages = chat_history_lines + branch_messages
+    chat_memory = ai_module.construct_chat_memory(self, input_text, combined_messages)
+    response = ai_module.get_response(self, chat_memory)
 
     return response
 

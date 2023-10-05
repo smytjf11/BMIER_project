@@ -258,7 +258,7 @@ class FlaskGui(MethodView):
         selected_item = data['selected_item']
         selected_item_id = data['selected_item_id']
 
-        conversation_id = database_module.create_branch(self, parent_conversation_id, selected_item, selected_item_id)
+        conversation_id = database_module.create_branch(self, parent_conversation_id,  selected_item_id)
 
         return jsonify({"conversation_id": conversation_id})
 
