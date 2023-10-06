@@ -57,19 +57,22 @@ def get_response(self, chat_memory):
         # return the response
 
        # Send the POST request to the Kobold API
+       # add quotes around the chat_memory
         try:
             
-            response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": chat_memory}).json()
+            response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": str(chat_memory)}).json()
 
             # Extract the text from the response directly
             response = response["results"][0]["text"][2:]
-            return response
         except:
             # if the request fails, notify the user that the request failed
             print("The request failed. this is likely due to the model not being loaded. this module requires the kobold api to be running. please check that the kobold api is running, and try again.")
             # also warn using a warning message in the gui 
             # dont return an empty string because that can potentially corrupt the database
-            return "no model loaded"
+            # return an error message
+            response = "no model loaded"
+        
+        return response
         # return the response
 
 def get_summary(prompt_messages):
@@ -85,24 +88,22 @@ def get_summary(prompt_messages):
 
         # send the post request to the kobold api using the requests library and wait for the response
         # use the chatgpt2 model via the kobold api to get the response
+        print("prompt_messages", prompt_messages)
+        # turn the prompt messages into a string
         try:
             
             response = requests.post("http://127.0.0.1:5000/api/v1/generate", 
             json={
-            "prompt": prompt_messages, 
-            "temperature": 0.7,
-            "max_tokens": 100,
-            "frequency_penalty": 0,
-            "presence_penalty": 0.6,
-            "stop": ["\r"]
+            "prompt": str(prompt_messages)
             }).json()
             # the response is a json object, so we need to parse it
+            print("response", response)
             response = response["results"][0]["text"][2:]
             return response
 
         except:
-             # if the request fails, notify the user that the request failed
-            print("The request failed. this is likely due to the model not being loaded. this module requires the kobold api to be running. please check that the kobold api is running, and try again.")
+             # if the request fails, notify the user that the summary creation failed
+            print("The summary creation failed.this is likely due to the model not being loaded. this module requires the kobold api to be running. please check that the kobold api is running, and try again.")
             # return an error message
             return "no model loaded"
         
