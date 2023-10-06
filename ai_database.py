@@ -75,11 +75,12 @@ def summarize_chat(self, conversation_id):
 
 
 def fetch_chat_history(self, conversation_id):
-    # call the get document function to get the full history of the conversation
-    full_history = database_module.get_document(self, conversation_id)
-    
-    history = ai_module._get_history(full_history) 
-    return history
+    if chat_history_enabled == True:
+        # Fetch the chat history lines from the parent conversation
+        chat_history_lines = database_module.fetch_chat_history(self, conversation_id)
+        return chat_history_lines
+    else:
+        return []
 
 
 def send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id=None):

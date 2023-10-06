@@ -26,8 +26,6 @@ def load_config():
     return config
 
 config = load_config()
-chat_history_enabled = config['chat_history']
-summary_enabled = config['summary']
 branching_enabled = config['branching']
 conversations_enabled = config['conversations']
 
@@ -129,9 +127,9 @@ class MainWindow(QMainWindow):
         # add the chat history to the chat history text box when the program starts
         # call populate branch tree function in this file and pass the conversation id
         # check if the config file has chat history enabled
-        if chat_history_enabled == True:
-            self.populate_branch_tree(conversation_id)
-            history = ai_database.fetch_chat_history(self, conversation_id)
+        
+        self.populate_branch_tree(conversation_id)
+        history = ai_database.fetch_chat_history(self, conversation_id)
                
         
         # add a horizontal layout for the submit button and the new chat button
