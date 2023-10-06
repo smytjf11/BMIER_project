@@ -30,7 +30,7 @@ gui_module_name = f"{gui.replace('.', '_')}_gui"
 gui_module = importlib.import_module(f"{gui_module_name}")
 database = config['database']
 database_module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{database_module_name}"
+database_module = importlib.import_module(f"{database_module_name}")
 
 
 
@@ -63,6 +63,9 @@ def summarize_chat(self, conversation_id):
             if summary == "":
                 print("Summary is empty. No update.")
                 return
+            if summary == "no model loaded":
+                print("Summary failed. No update.")
+                return "no model loaded"
 
             # Update the chat summary in the mongo database
             database_module.update_summary(self, conversation_id, summary)

@@ -177,7 +177,8 @@ class MainWindow(QMainWindow):
         
         # add the chat history to the chat history tree view
         # call the populate branch tree function with the selected_conversation_id
-        self.populate_branch_tree(selected_conversation_id)
+        if chat_history_enabled == True:
+            self.populate_branch_tree(selected_conversation_id)
         # set the global conversation id variable to the selected conversation id
         conversation_id = selected_conversation_id
         
@@ -186,6 +187,15 @@ class MainWindow(QMainWindow):
 
     def on_submit_button_clicked(self):
         global selected_item, selected_branch_conversation_id, conversation_id
+        def warn():
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the "
+            + model + " api to be running. please check that the kobold api is running and try again.")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+            return
         
         input_text = self.user_input.text()
         self.user_input.clear()
@@ -201,14 +211,8 @@ class MainWindow(QMainWindow):
         if response == "no model loaded":
             # show a warning message to the user
 
-            # show a warning window
-            
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Warning)
-            msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the " + model + " api to be running. please check that the kobold api is running and try again.")
-            msg.setWindowTitle("Warning")
-            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
-            msg.exec_()
+            # show a warning window by calling the warn function
+            warn()
 
             return
         model_message = ai_module.prepare_model_message(self, response)
@@ -230,13 +234,24 @@ class MainWindow(QMainWindow):
             conversation_item.appendRow(model_message_item)
             parent_conversation_id = conversation_id
             
-
-        database_module.add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message)
+        if chat_history_enabled == True:
+            database_module.add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message)
+            
 
 
         
         # call the summarize chat function and pass the conversation id
-        ai_database.summarize_chat(self, conversation_id)
+        summary = ai_database.summarize_chat(self, conversation_id)
+        if summary == "no model loaded":
+            # show a warning message to the user
+
+            # show a warning window by calling the warn function
+
+            warn()
+
+            return
+        
+        
         
 
     def set_selected_item(self, item):

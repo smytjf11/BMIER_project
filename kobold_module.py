@@ -28,18 +28,22 @@ def construct_chat_memory(self, input_text, combined_messages):
         # it takes in the input text, and the combined messages from the database
         # it then combines them into a single list, and returns the list
         # If the combined messages exceed the maximum memory length, truncate the list
-        if len(combined_messages) >= config['memory_length']:
-            chat_memory = combined_messages[-config['memory_length']:]
+        if config['chat_history'] == True:
+            if len(combined_messages) >= config['memory_length']:
+                chat_memory = combined_messages[-config['memory_length']:]
+            else:
+                chat_memory = combined_messages
+            
+            # Remove any messages with the role "Branches" from the chat memory
+            chat_memory = [message for message in chat_memory if message["role"] != "Branches"]
+
+            # Add the user's input as a new message to the chat memory
+            chat_memory.append({"role": "user", "content": input_text})
+            print ("chat_memory", chat_memory)
+
+            return chat_memory
         else:
-            chat_memory = combined_messages
-        
-        # Remove any messages with the role "Branches" from the chat memory
-        chat_memory = [message for message in chat_memory if message["role"] != "Branches"]
-
-        # Add the user's input as a new message to the chat memory
-        chat_memory.append({"role": "user", "content": input_text})
-
-        return chat_memory
+            return input_text
 
 
 def get_response(self, chat_memory):
