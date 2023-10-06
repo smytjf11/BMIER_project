@@ -219,9 +219,11 @@ class MainWindow(QMainWindow):
             parent_conversation_id = conversation_id
 
         database_module.add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message)
+
+        if summary == True:
         
-        # call the summarize chat function and pass the conversation id
-        ai_database.summarize_chat(self, conversation_id)
+            # call the summarize chat function and pass the conversation id
+            ai_database.summarize_chat(self, conversation_id)
         
 
     def set_selected_item(self, item):
