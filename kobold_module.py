@@ -52,27 +52,13 @@ def get_response(self, chat_memory):
         # the response is the response from the model
         # return the response
 
-        # send the post request to the kobold api using the requests library and wait for the response
+       # Send the POST request to the Kobold API
         response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": chat_memory}).json()
-        # the response is a json object, so we need to parse it
-        response = response["results"]
-        # we need to clean it up so that it is in the correct format
-        # its in the form of [{'text': ", TEXT HERE"}] we just want the part labeled TEXT HERE
-        response = response[0]["text"]
-        # remove the ", " from the beginning of the response
-        response = response[2:]
-        
 
-
-        
+        # Extract the text from the response directly
+        response = response["results"][0]["text"][2:]
         # return the response
         print(response)
-
-        
-        
-        
-    
-
         
         return response 
 
@@ -99,12 +85,7 @@ def get_summary(prompt_messages):
         "stop": ["\r"]
         }).json()
         # the response is a json object, so we need to parse it
-        response = response["results"]
-        # we need to clean it up so that it is in the correct format
-        # its in the form of [{'text': ", TEXT HERE"}] we just want the part labeled TEXT HERE
-        response = response[0]["text"]
-        # remove the ", " from the beginning of the response
-        response = response[2:]
+        response = response["results"][0]["text"][2:]
         # return the response
 
 

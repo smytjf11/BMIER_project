@@ -38,36 +38,39 @@ database_module = importlib.import_module(f"{module_name}")
 global conversation_id 
 
 def summarize_chat(self, conversation_id):
-    # Get the message count from the database
-    message_count = database_module.count_conversation_messages(self, conversation_id)
+    if summary == True:
+        # Get the message count from the database
+        message_count = database_module.count_conversation_messages(self, conversation_id)
 
-    # If the message count is 0, warn the user and abort the summary
-    if message_count == 0:
-        print("Message count is 0. Summary aborted.")
-        return
-
-    # Check if the summary should be updated
-    if message_count % config['summary_update_interval'] == 0:
-        summary_str, messages_str = database_module.get_summary_data(self, conversation_id)
-
-        # Create the prompt string with the summary at the beginning
-        prompt = "Please provide a concise summary of the following, in about 20 words or less:" + summary_str + "\r" + messages_str + "\r"
-
-        # Create a prompt for the OpenAI API that uses the messages
-        prompt_messages = [{"role": "user", "content": prompt}]
-
-        # Get the summary from the OpenAI API
-        summary = ai_module.get_summary(prompt_messages)
-        # check if the summary is empty
-        if summary == "":
-            print("Summary is empty. No update.")
+        # If the message count is 0, warn the user and abort the summary
+        if message_count == 0:
+            print("Message count is 0. Summary aborted.")
             return
 
-        # Update the chat summary in the mongo database
-        database_module.update_summary(self, conversation_id, summary)
+        # Check if the summary should be updated
+        if message_count % config['summary_update_interval'] == 0:
+            summary_str, messages_str = database_module.get_summary_data(self, conversation_id)
+
+            # Create the prompt string with the summary at the beginning
+            prompt = "Please provide a concise summary of the following, in about 20 words or less:" + summary_str + "\r" + messages_str + "\r"
+
+            # Create a prompt for the OpenAI API that uses the messages
+            prompt_messages = [{"role": "user", "content": prompt}]
+
+            # Get the summary from the OpenAI API
+            summary = ai_module.get_summary(prompt_messages)
+            # check if the summary is empty
+            if summary == "":
+                print("Summary is empty. No update.")
+                return
+
+            # Update the chat summary in the mongo database
+            database_module.update_summary(self, conversation_id, summary)
+        else:
+            print("No summary update.")
+            print("Final message count is", message_count)
     else:
-        print("No summary update.")
-        print("Final message count is", message_count)
+        print("Summary is disabled.")
 
 
 
