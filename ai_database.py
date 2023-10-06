@@ -19,18 +19,18 @@ conversations_enabled = config['conversations']
 
 
 model = config['ai_model']
-module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{module_name}")
+model_module_name = f"{model.replace('.', '_')}_module"
+ai_module = importlib.import_module(f"{model_module_name}")
+
+
 
 
 gui = config['gui']
-module_name = f"{gui.replace('.', '_')}_gui"
-gui_module = importlib.import_module(f"{module_name}")
-
-
+gui_module_name = f"{gui.replace('.', '_')}_gui"
+gui_module = importlib.import_module(f"{gui_module_name}")
 database = config['database']
-module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{module_name}")
+database_module_name = f"{database.replace('.', '_')}_database"
+database_module = importlib.import_module(f"{database_module_name}"
 
 
 
@@ -101,6 +101,7 @@ def send_to_api(self, input_text, conversation_id, selected_item, selected_branc
     combined_messages = chat_history_lines + branch_messages
     chat_memory = ai_module.construct_chat_memory(self, input_text, combined_messages)
     response = ai_module.get_response(self, chat_memory)
+    # check if the response is empty
 
     return response
 

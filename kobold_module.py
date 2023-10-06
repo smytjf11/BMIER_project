@@ -53,14 +53,20 @@ def get_response(self, chat_memory):
         # return the response
 
        # Send the POST request to the Kobold API
-        response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": chat_memory}).json()
+        try:
+            
+            response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": chat_memory}).json()
 
-        # Extract the text from the response directly
-        response = response["results"][0]["text"][2:]
+            # Extract the text from the response directly
+            response = response["results"][0]["text"][2:]
+            return response
+        except:
+            # if the request fails, notify the user that the request failed
+            print("The request failed. this is likely due to the model not being loaded. this module requires the kobold api to be running. please check that the kobold api is running, and try again.")
+            # also warn using a warning message in the gui 
+            # dont return an empty string because that can potentially corrupt the database
+            return "no model loaded"
         # return the response
-        print(response)
-        
-        return response 
 
 def get_summary(prompt_messages):
         # this function is used to get the summary from the model
@@ -75,21 +81,27 @@ def get_summary(prompt_messages):
 
         # send the post request to the kobold api using the requests library and wait for the response
         # use the chatgpt2 model via the kobold api to get the response
-        response = requests.post("http://127.0.0.1:5000/api/v1/generate", 
-        json={
-        "prompt": prompt_messages, 
-        "temperature": 0.7,
-        "max_tokens": 100,
-        "frequency_penalty": 0,
-        "presence_penalty": 0.6,
-        "stop": ["\r"]
-        }).json()
-        # the response is a json object, so we need to parse it
-        response = response["results"][0]["text"][2:]
-        # return the response
+        try:
+            
+            response = requests.post("http://127.0.0.1:5000/api/v1/generate", 
+            json={
+            "prompt": prompt_messages, 
+            "temperature": 0.7,
+            "max_tokens": 100,
+            "frequency_penalty": 0,
+            "presence_penalty": 0.6,
+            "stop": ["\r"]
+            }).json()
+            # the response is a json object, so we need to parse it
+            response = response["results"][0]["text"][2:]
+            return response
 
-
-        return response
+        except:
+             # if the request fails, notify the user that the request failed
+            print("The request failed. this is likely due to the model not being loaded. this module requires the kobold api to be running. please check that the kobold api is running, and try again.")
+            # return an error message
+            return "no model loaded"
+        
 
 
 

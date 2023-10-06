@@ -34,12 +34,12 @@ conversations_enabled = config['conversations']
 
 
 model = config['ai_model']
-module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{module_name}")
+model_module_name = f"{model.replace('.', '_')}_module"
+ai_module = importlib.import_module(f"{model_module_name}")
 
 database = config['database']
-module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{module_name}")
+database_module_name = f"{database.replace('.', '_')}_database"
+database_module = importlib.import_module(f"{database_module_name}")
 
 
 
@@ -198,6 +198,19 @@ class MainWindow(QMainWindow):
 
         user_message = ai_module.prepare_user_message(self, input_text)
         response = ai_database.send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id)
+        if response == "no model loaded":
+            # show a warning message to the user
+
+            # show a warning window
+            
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the " + model + " api to be running. please check that the kobold api is running and try again.")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+
+            return
         model_message = ai_module.prepare_model_message(self, response)
 
         user_message_item = QtGui.QStandardItem(f"{user_message['text']}")
