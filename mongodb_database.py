@@ -11,6 +11,10 @@ def load_config():
     return config
 
 config = load_config()
+chat_history = config['chat_history']
+summary = config['summary']
+branching = config['branching']
+conversations = config['conversations']
 
 # a function to check if the conversation exists in the database
 

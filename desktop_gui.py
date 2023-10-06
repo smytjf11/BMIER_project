@@ -26,10 +26,10 @@ def load_config():
     return config
 
 config = load_config()
-chat_history = config['chat_history']
-summary = config['summary']
-branching = config['branching']
-conversations = config['conversations']
+chat_history_enabled = config['chat_history']
+summary_enabled = config['summary']
+branching_enabled = config['branching']
+conversations_enabled = config['conversations']
 
 
 
@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
         user_input.addWidget(self.user_input)
         # add a branch button to the horizontal layout to branch the conversation
         # check if the config file has branching enabled
-        if branching == True:
+        if branching_enabled == True:
             self.branch_button = QPushButton('')
             # use an icon for the branch button
             # obtained from https://www.iconsdb.com/black-icons/fork-2-icon.html 
@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
 
         # add a dropdown menu to the horizontal layout to select the conversation
         # check if the config file has conversations enabled
-        if conversations == True:
+        if conversations_enabled == True:
             self.conversation = QComboBox()
             # call the set dropdown function in this file
             self.set_dropdown()
@@ -129,7 +129,7 @@ class MainWindow(QMainWindow):
         # add the chat history to the chat history text box when the program starts
         # call populate branch tree function in this file and pass the conversation id
         # check if the config file has chat history enabled
-        if chat_history == True:
+        if chat_history_enabled == True:
             self.populate_branch_tree(conversation_id)
             history = ai_database.fetch_chat_history(self, conversation_id)
                
@@ -217,6 +217,7 @@ class MainWindow(QMainWindow):
             conversation_item.appendRow(user_message_item)
             conversation_item.appendRow(model_message_item)
             parent_conversation_id = conversation_id
+            
 
         database_module.add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message)
 
@@ -258,7 +259,7 @@ class MainWindow(QMainWindow):
                 # check if the config file has branching enabled
                 branch_conversation = database_module.get_conversation(self, branch_id)
                 # check if the config file has branching enabled
-                if branching == True:
+                if branching_enabled == True:
 
                     for row in range(conversation_item.rowCount()):
                         item = conversation_item.child(row)

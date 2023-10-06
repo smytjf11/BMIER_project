@@ -12,10 +12,10 @@ def load_config():
     return config
 
 config = load_config()
-chat_history = config['chat_history']
-summary = config['summary']
-branching = config['branching']
-conversations = config['conversations']
+chat_history_enabled = config['chat_history']
+summary_enabled = config['summary']
+branching_enabled = config['branching']
+conversations_enabled = config['conversations']
 
 
 model = config['ai_model']
@@ -38,7 +38,7 @@ database_module = importlib.import_module(f"{module_name}")
 global conversation_id 
 
 def summarize_chat(self, conversation_id):
-    if summary == True:
+    if summary_enabled == True:
         # Get the message count from the database
         message_count = database_module.count_conversation_messages(self, conversation_id)
 
@@ -84,13 +84,13 @@ def fetch_chat_history(self, conversation_id):
 
 def send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id=None):
     # Fetch the chat history lines from the parent conversation
-    if chat_history == True:
+    if chat_history_enabled == True:
         chat_history_lines = fetch_chat_history(self, conversation_id)
     else:
         chat_history_lines = []
 
     # Fetch the messages from the selected branch (if any) and convert them to a list of dictionaries
-    if branching == True and selected_branch_conversation_id:
+    if branching_enabled == True and selected_branch_conversation_id:
         branch_messages = database_module.fetch_selected_branch_messages(self, selected_item, selected_branch_conversation_id)
     
         
