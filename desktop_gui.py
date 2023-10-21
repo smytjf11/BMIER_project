@@ -208,7 +208,7 @@ class MainWindow(QMainWindow):
 
         user_message = ai_module.prepare_user_message(self, input_text)
         response = ai_database.send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id)
-        if response == "no model loaded":
+        if response == "no model loaded" or response == "":
             # show a warning message to the user
 
             # show a warning window by calling the warn function
@@ -276,10 +276,24 @@ class MainWindow(QMainWindow):
             self.chat_history_model.appendRow(conversation_item)
         else:
             conversation_item = parent_item
+        try:
+            for message in conversation['messages']:
+                message_item = QtGui.QStandardItem(f"{message['sender']}: {message['text']}")
+                conversation_item.appendRow(message_item)
+        except TypeError:
+            #   TypeError: 'NoneType' object is not subscriptable
+            # this error occurs when a branch was deleted but the branch message was not deleted
+            # the user should be notified that they need to delete the branch message
 
-        for message in conversation['messages']:
-            message_item = QtGui.QStandardItem(f"{message['sender']}: {message['text']}")
-            conversation_item.appendRow(message_item)
+            # show a warning message to the user
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.setText("there was an error loading the conversation. this is likely due to a branch being deleted but the marker for the branch not being deleted. the marker is a message that says 'Branches: <branch id>'. please delete the branch marker and try again.")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+            return
+
         # check if the config file has branching enabled
         if 'branches' in conversation:
             for branch_id in conversation['branches']:
