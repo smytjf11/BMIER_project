@@ -182,20 +182,22 @@ class MainWindow(QMainWindow):
         # set the global conversation id variable to the selected conversation id
         conversation_id = selected_conversation_id
         
-
-
-
-    def on_submit_button_clicked(self):
-        global selected_item, selected_branch_conversation_id, conversation_id
-        def warn():
+    def warn(self, message):
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
-            msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the "
+            if message == "no model loaded":
+                msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the "
             + model + " api to be running. please check that the kobold api is running and try again.")
+            if message == "blank":
+                msg.setText("The request failed. this is likely due an error causing the response from the model to be blank.")
             msg.setWindowTitle("Warning")
             msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msg.exec_()
             return
+
+
+    def on_submit_button_clicked(self):
+        global selected_item, selected_branch_conversation_id, conversation_id
         
         input_text = self.user_input.text()
         self.user_input.clear()
@@ -208,12 +210,15 @@ class MainWindow(QMainWindow):
 
         user_message = ai_module.prepare_user_message(self, input_text)
         response = ai_database.send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id)
-        if response == "no model loaded" or response == "":
+        if response == "no model loaded":
             # show a warning message to the user
-
-            # show a warning window by calling the warn function
-            warn()
-
+            # show a warning window by calling the warn function in this file
+            self.warn("no model loaded")
+            return
+        if response == "":
+            # show a warning message to the user
+            # show a warning window by calling the warn function in this file
+            self.warn("blank")
             return
         model_message = ai_module.prepare_model_message(self, response)
 
@@ -247,7 +252,7 @@ class MainWindow(QMainWindow):
 
             # show a warning window by calling the warn function
 
-            warn()
+            self.warn("no model loaded")
 
             return
         
