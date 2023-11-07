@@ -7,4 +7,4 @@ __pycache__/
 notes.txt
 copy.txt
 testing/
-config
+config.json
