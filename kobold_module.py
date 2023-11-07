@@ -56,8 +56,10 @@ def get_response(self, chat_memory):
         # the response is the response from the model
         # return the response
 
-       # Send the POST request to the Kobold API
-       # add quotes around the chat_memory
+        # Send the POST request to the Kobold API
+        # add quotes around the chat_memory
+        # we just want the text and not the role
+        #  
         try:
             
             response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": str(chat_memory)}).json()
