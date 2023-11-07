@@ -53,6 +53,9 @@ def get_dropdown_conversation_ids(self):
 
 def add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message):
     # print the values of the parameters
+    # check if if the sender for the model message is assistant if it is bot then change it to assistant
+    if model_message["sender"] == "bot":
+        model_message["sender"] = "assistant"
     conversation = self.collection.find_one({"conversation_id": conversation_id})
     if conversation:
         # If conversation exists, append the new messages to the messages array

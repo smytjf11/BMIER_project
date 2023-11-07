@@ -41,6 +41,15 @@ def construct_chat_memory(self, input_text, combined_messages):
             chat_memory.append({"role": "user", "content": input_text})
             print ("chat_memory", chat_memory)
 
+            # strip out everything except the text
+
+            chat_memory = [message["content"] for message in chat_memory]
+            # the format for kobold is "text", "text", "text"
+            # so we need to add quotes around each message and then join them together with commas
+            chat_memory = '", "'.join(chat_memory)
+
+            print ("chat_memory", chat_memory)
+
             return chat_memory
         else:
             return input_text
@@ -137,7 +146,7 @@ def prepare_user_message(self, input_text):
 def prepare_model_message(self, response):
     # use a dummy response for now
     model_message = {
-        "sender": "assistant",
+        "sender": "bot",
         "text": response,
         "timestamp": datetime.now().strftime("%H:%M:%S")
     }
