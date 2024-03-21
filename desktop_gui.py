@@ -31,13 +31,9 @@ conversations_enabled = config['conversations']
 
 
 
-model = config['ai_model']
-model_module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"modules.ai_model.{model_module_name}")
+ai_module = importlib.import_module(f"modules.ai_model.{config['ai_model']}")
 
-database = config['database']
-database_module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"modules.database.{database_module_name}")
+database_module = importlib.import_module(f"modules.database.{config['database']}")
 
 
 
@@ -185,7 +181,7 @@ class MainWindow(QMainWindow):
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             if message == "no model loaded":
                 msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the "
-            + model + " api to be running. please check that the kobold api is running and try again.")
+            + config['ai_model'] + " api to be running. please check that the kobold api is running and try again.")
             if message == "blank":
                 msg.setText("The request failed. this is likely due an error causing the response from the model to be blank.")
             msg.setWindowTitle("Warning")

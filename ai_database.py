@@ -12,25 +12,15 @@ def load_config():
     return config
 
 config = load_config()
-chat_history_enabled = config['chat_history']
-summary_enabled = config['summary']
-branching_enabled = config['branching']
-conversations_enabled = config['conversations']
+chat_history_enabled, summary_enabled, branching_enabled, conversations_enabled = \
+    config['chat_history'], config['summary'], config['branching'], config['conversations']
+
+ai_module = importlib.import_module(f"modules.ai_model.{config['ai_model']}")
+
+gui_module = importlib.import_module(f"{config['gui']}")
 
 
-model = config['ai_model']
-model_module_name = f"{model.replace('.', '_')}_module"
-# the location of the module is now in a subfolder \modules\ai_model\
-ai_module = importlib.import_module(f"modules.ai_model.{model_module_name}")
-
-gui = config['gui']
-gui_module_name = f"{gui.replace('.', '_')}_gui"
-gui_module = importlib.import_module(f"{gui_module_name}")
-
-
-database = config['database']
-database_module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"modules.database.{database_module_name}")
+database_module = importlib.import_module(f"modules.database.{config['database']}")
 
 
 
