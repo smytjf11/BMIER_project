@@ -291,7 +291,7 @@ class MainWindow(QMainWindow):
             # show a warning message to the user
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
-            msg.setText("there was an error loading the conversation. this is likely due to a branch being deleted but the marker for the branch not being deleted in the database. the marker is a message that says 'Branches: <branch id>'. please delete the branch marker and try again.")
+            msg.setText("there was an error loading the conversation. this is likely due to a branch being deleted but the marker for the branch not being deleted in the " + config['database'] + " database. the marker is a message that says 'Branches: <branch id>'. please delete the branch marker and try again.")
             msg.setWindowTitle("Warning")
             msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msg.exec_()
