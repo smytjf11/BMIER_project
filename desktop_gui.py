@@ -14,8 +14,6 @@ import uuid
 import datetime
 
 
-import mongodb_database as database_module
-
 conversation_id = None
 selected_branch_conversation_id = None
 selected_item = None
@@ -35,11 +33,11 @@ conversations_enabled = config['conversations']
 
 model = config['ai_model']
 model_module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{model_module_name}")
+ai_module = importlib.import_module(f"modules.ai_model.{model_module_name}")
 
 database = config['database']
 database_module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{database_module_name}")
+database_module = importlib.import_module(f"modules.database.{database_module_name}")
 
 
 
@@ -293,7 +291,7 @@ class MainWindow(QMainWindow):
             # show a warning message to the user
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
-            msg.setText("there was an error loading the conversation. this is likely due to a branch being deleted but the marker for the branch not being deleted. the marker is a message that says 'Branches: <branch id>'. please delete the branch marker and try again.")
+            msg.setText("there was an error loading the conversation. this is likely due to a branch being deleted but the marker for the branch not being deleted in the database. the marker is a message that says 'Branches: <branch id>'. please delete the branch marker and try again.")
             msg.setWindowTitle("Warning")
             msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msg.exec_()

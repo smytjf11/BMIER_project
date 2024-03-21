@@ -34,11 +34,11 @@ print(" summary update interval is ", config['summary_update_interval'])
 
 model = config['ai_model']
 model_module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{model_module_name}")
+ai_module = importlib.import_module(f"modules.ai_model.{model_module_name}")
 
 database = config['database']
 database_module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{database_module_name}")
+database_module = importlib.import_module(f"modules.database.{database_module_name}")
 
 class FlaskGui(MethodView):
     def __init__(self):

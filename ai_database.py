@@ -20,17 +20,17 @@ conversations_enabled = config['conversations']
 
 model = config['ai_model']
 model_module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{model_module_name}")
-
-
-
+# the location of the module is now in a subfolder \modules\ai_model\
+ai_module = importlib.import_module(f"modules.ai_model.{model_module_name}")
 
 gui = config['gui']
 gui_module_name = f"{gui.replace('.', '_')}_gui"
 gui_module = importlib.import_module(f"{gui_module_name}")
+
+
 database = config['database']
 database_module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{database_module_name}")
+database_module = importlib.import_module(f"modules.database.{database_module_name}")
 
 
 
