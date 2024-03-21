@@ -32,13 +32,9 @@ config = load_config()
 print(" memory length is ", config['memory_length'])
 print(" summary update interval is ", config['summary_update_interval'])
 
-model = config['ai_model']
-module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{module_name}")
+ai_module = importlib.import_module(f"modules.ai_model.{config['ai_model']}")
 
-database = config['database']
-module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{module_name}")
+database_module = importlib.import_module(f"modules.database.{config['database']}")
 
 class FlaskGui(MethodView):
     def __init__(self):
@@ -258,7 +254,7 @@ class FlaskGui(MethodView):
         selected_item = data['selected_item']
         selected_item_id = data['selected_item_id']
 
-        conversation_id = database_module.create_branch(self, parent_conversation_id, selected_item, selected_item_id)
+        conversation_id = database_module.create_branch(self, parent_conversation_id,  selected_item_id)
 
         return jsonify({"conversation_id": conversation_id})
 
@@ -306,4 +302,6 @@ def closeEvent(self, event):
     self.client.close()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # run the server on port 5001 due to the fact that the oobabooga api runs on port 5000
+    
+    app.run(debug=True, port=5001)
