@@ -33,12 +33,12 @@ print(" memory length is ", config['memory_length'])
 print(" summary update interval is ", config['summary_update_interval'])
 
 model = config['ai_model']
-module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{module_name}")
+model_module_name = f"{model.replace('.', '_')}_module"
+ai_module = importlib.import_module(f"{model_module_name}")
 
 database = config['database']
-module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{module_name}")
+database_module_name = f"{database.replace('.', '_')}_database"
+database_module = importlib.import_module(f"{database_module_name}")
 
 class FlaskGui(MethodView):
     def __init__(self):
@@ -306,4 +306,6 @@ def closeEvent(self, event):
     self.client.close()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # run the server on port 5001 due to the fact that the oobabooga api runs on port 5000
+    
+    app.run(debug=True, port=5001)

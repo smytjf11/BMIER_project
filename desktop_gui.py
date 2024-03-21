@@ -26,21 +26,20 @@ def load_config():
     return config
 
 config = load_config()
-chat_history = config['chat_history']
-summary = config['summary']
-branching = config['branching']
-conversations = config['conversations']
+chat_history_enabled = config['chat_history']
+branching_enabled = config['branching']
+conversations_enabled = config['conversations']
 
 
 
 
 model = config['ai_model']
-module_name = f"{model.replace('.', '_')}_module"
-ai_module = importlib.import_module(f"{module_name}")
+model_module_name = f"{model.replace('.', '_')}_module"
+ai_module = importlib.import_module(f"{model_module_name}")
 
 database = config['database']
-module_name = f"{database.replace('.', '_')}_database"
-database_module = importlib.import_module(f"{module_name}")
+database_module_name = f"{database.replace('.', '_')}_database"
+database_module = importlib.import_module(f"{database_module_name}")
 
 
 
@@ -88,7 +87,7 @@ class MainWindow(QMainWindow):
         user_input.addWidget(self.user_input)
         # add a branch button to the horizontal layout to branch the conversation
         # check if the config file has branching enabled
-        if branching == True:
+        if branching_enabled == True:
             self.branch_button = QPushButton('')
             # use an icon for the branch button
             # obtained from https://www.iconsdb.com/black-icons/fork-2-icon.html 
@@ -102,7 +101,7 @@ class MainWindow(QMainWindow):
 
         # add a dropdown menu to the horizontal layout to select the conversation
         # check if the config file has conversations enabled
-        if conversations == True:
+        if conversations_enabled == True:
             self.conversation = QComboBox()
             # call the set dropdown function in this file
             self.set_dropdown()
@@ -129,7 +128,7 @@ class MainWindow(QMainWindow):
         # add the chat history to the chat history text box when the program starts
         # call populate branch tree function in this file and pass the conversation id
         # check if the config file has chat history enabled
-        if chat_history == True:
+        if chat_history_enabled == True:
             self.populate_branch_tree(conversation_id)
             history = ai_database.fetch_chat_history(self, conversation_id)
                
@@ -178,11 +177,23 @@ class MainWindow(QMainWindow):
         
         # add the chat history to the chat history tree view
         # call the populate branch tree function with the selected_conversation_id
-        self.populate_branch_tree(selected_conversation_id)
+        if chat_history_enabled == True:
+            self.populate_branch_tree(selected_conversation_id)
         # set the global conversation id variable to the selected conversation id
         conversation_id = selected_conversation_id
         
-
+    def warn(self, message):
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            if message == "no model loaded":
+                msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the "
+            + model + " api to be running. please check that the kobold api is running and try again.")
+            if message == "blank":
+                msg.setText("The request failed. this is likely due an error causing the response from the model to be blank.")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+            return
 
 
     def on_submit_button_clicked(self):
@@ -199,6 +210,16 @@ class MainWindow(QMainWindow):
 
         user_message = ai_module.prepare_user_message(self, input_text)
         response = ai_database.send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id)
+        if response == "no model loaded":
+            # show a warning message to the user
+            # show a warning window by calling the warn function in this file
+            self.warn("no model loaded")
+            return
+        if response == "":
+            # show a warning message to the user
+            # show a warning window by calling the warn function in this file
+            self.warn("blank")
+            return
         model_message = ai_module.prepare_model_message(self, response)
 
         user_message_item = QtGui.QStandardItem(f"{user_message['text']}")
@@ -217,11 +238,25 @@ class MainWindow(QMainWindow):
             conversation_item.appendRow(user_message_item)
             conversation_item.appendRow(model_message_item)
             parent_conversation_id = conversation_id
+            
+        if chat_history_enabled == True:
+            database_module.add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message)
+            
 
-        database_module.add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message)
+
         
         # call the summarize chat function and pass the conversation id
-        ai_database.summarize_chat(self, conversation_id)
+        summary = ai_database.summarize_chat(self, conversation_id)
+        if summary == "no model loaded":
+            # show a warning message to the user
+
+            # show a warning window by calling the warn function
+
+            self.warn("no model loaded")
+
+            return
+        
+        
         
 
     def set_selected_item(self, item):
@@ -246,17 +281,31 @@ class MainWindow(QMainWindow):
             self.chat_history_model.appendRow(conversation_item)
         else:
             conversation_item = parent_item
+        try:
+            for message in conversation['messages']:
+                message_item = QtGui.QStandardItem(f"{message['sender']}: {message['text']}")
+                conversation_item.appendRow(message_item)
+        except TypeError:
+            #   TypeError: 'NoneType' object is not subscriptable
+            # this error occurs when a branch was deleted but the branch message was not deleted
+            # the user should be notified that they need to delete the branch message
 
-        for message in conversation['messages']:
-            message_item = QtGui.QStandardItem(f"{message['sender']}: {message['text']}")
-            conversation_item.appendRow(message_item)
+            # show a warning message to the user
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.setText("there was an error loading the conversation. this is likely due to a branch being deleted but the marker for the branch not being deleted. the marker is a message that says 'Branches: <branch id>'. please delete the branch marker and try again.")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+            return
+
         # check if the config file has branching enabled
         if 'branches' in conversation:
             for branch_id in conversation['branches']:
                 # check if the config file has branching enabled
                 branch_conversation = database_module.get_conversation(self, branch_id)
                 # check if the config file has branching enabled
-                if branching == True:
+                if branching_enabled == True:
 
                     for row in range(conversation_item.rowCount()):
                         item = conversation_item.child(row)
