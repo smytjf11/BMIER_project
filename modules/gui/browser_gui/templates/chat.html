@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -20,7 +21,8 @@
         </div>
 
         <div class="input-controls">
-          <input id="user-input" type="text" placeholder="Type your message here...">
+          <div class="input-row">
+    <input id="user-input" type="text" placeholder="Type your message here...">
           <a href="#" id="branch-button">
             <img src="{{ url_for('static', filename='branch.png') }}" alt="branch">
           </a>

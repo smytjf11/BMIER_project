@@ -26,7 +26,6 @@ def conversation_exists(self, conversation_id):
     # check if the messages field in the conversation document is empty ie the conversation has no messages in it
 
         if "messages" in conversation and len(conversation["messages"]) > 0:
-            print ("the number of messages in the conversation is: ", len(conversation["messages"]))
             # if the conversation has messages in it return true
             return True
         else:
@@ -50,8 +49,6 @@ def get_dropdown_conversation_ids(self):
 
 def add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message):
     # print the values of the parameters
-    print("conversation_id database: ", conversation_id)
-    print("parent_conversation_id database: ", parent_conversation_id)
     conversation = self.collection.find_one({"conversation_id": conversation_id})
     if conversation:
         # If conversation exists, append the new messages to the messages array
@@ -72,7 +69,6 @@ def add_to_database(self, conversation_id, parent_conversation_id,  user_message
 
 
 def count_conversation_messages(self, conversation_id):
-    print("conversation id sent to count_conversation_messages: ", conversation_id)
     # initialize the parent_conversation_id variable
     parent_conversation_id = ""
     # Find the conversation with the specified conversation_id and is_archived set to 0
@@ -81,7 +77,6 @@ def count_conversation_messages(self, conversation_id):
     conversation = self.collection.find_one({"conversation_id": conversation_id, "is_archived": 0}, {"parent_conversation_id": 1, "_id": 0, "messages": 1})
     # get the number of messages in the conversation document
     conversation_messages_count = len(conversation["messages"])
-    print("conversation found: ", conversation)
     
     
     if conversation:
@@ -95,31 +90,24 @@ def count_conversation_messages(self, conversation_id):
             for message in parent_conversation["messages"]:
                 if message["text"] == conversation_id:
                     parent_messages_count = parent_conversation["messages"].index(message)
-                    print ("parent_messages_count: ", parent_messages_count)
                     # get the number of messages in the branch conversation document
                     branch_conversation_messages_count = conversation_messages_count
-                    print ("branch_conversation_messages_count: ", branch_conversation_messages_count)
                     # return the sum of the number of messages in the parent conversation document and the number of messages in the branch conversation document
                     message_count = parent_messages_count + branch_conversation_messages_count
                     
                     # get the number of messages in the parent conversation document that have Branches as the value of the "sender" field
                     # this is done to account for the messages that are to mark the location of the branch conversation in the parent conversation document
                     branches_messages_count = len([message for message in parent_conversation["messages"] if message["sender"] == "Branches"])-1
-                    print ("branch_messages_count: ", branches_messages_count)
                     final_message_count = message_count - branches_messages_count
-                    print ("final_message_count: ", final_message_count)
                     return final_message_count
         else:
             # if the conversation is not a branch conversation return the number of messages in the conversation document
-            print ("conversation is not a branch conversation")
             # get the number of messages in the conversation document that have Branches as the value of the "sender" field
             # this is done to account for the messages that are to mark the location of the branch conversation in the conversation document
             branches_messages_count = len([message for message in conversation["messages"] if message["sender"] == "Branches"])
-            print ("branch_messages_count: ", branches_messages_count)
             # the branch messages are not included in the count of the number of messages in the conversation document
             # this is because the branch messages are not displayed in the chat window
             # subtract the number of branch messages from the total number of messages in the conversation document
-            print ("final_message_count: ", conversation_messages_count - branches_messages_count)
             return conversation_messages_count - branches_messages_count
     else:
         # Raise an error for better debugging
@@ -167,8 +155,6 @@ def get_summary_data(self, conversation_id):
 
     # Extract the messages
     messages = conversation["messages"] if "messages" in conversation else []
-    if len(messages) > config['memory_length']:
-        messages = messages[-config['memory_length']:]
 
     # Check if the conversation is a branch conversation
     if conversation["parent_conversation_id"] != conversation_id:
@@ -193,10 +179,13 @@ def get_summary_data(self, conversation_id):
                 branch_messages = conversation["messages"]
                 # add the branch messages  to the end of the messages in the parent conversation document before the message with the conversation_id of the branch conversation
                 messages.extend(branch_messages)
+    # check if the length of the messages array is greater than the memory length
+    if len(messages) > config['memory_length']:
+        # if the length of the messages array is greater than the memory length then get the last n messages in the messages array
+        messages = messages[-config['memory_length']:]
 
     # Convert the messages into a single string
     messages_str = "\r".join([message["text"] for message in messages])
-    print ("messages_str: ", messages_str)
     return summary_str, messages_str
 
 
