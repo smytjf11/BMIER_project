@@ -87,13 +87,13 @@ def fetch_chat_history(self, conversation_id):
 
 def send_to_api(self, input_text, conversation_id, selected_item, selected_branch_conversation_id=None):
     # Fetch the chat history lines from the parent conversation
-    if chat_history_enabled == True:
+    if chat_history_enabled:
         chat_history_lines = fetch_chat_history(self, conversation_id)
     else:
         chat_history_lines = []
 
     # Fetch the messages from the selected branch (if any) and convert them to a list of dictionaries
-    if branching_enabled == True and selected_branch_conversation_id:
+    if branching_enabled and selected_branch_conversation_id:
         branch_messages = database_module.fetch_selected_branch_messages(self, selected_item, selected_branch_conversation_id)
     
         
@@ -104,7 +104,6 @@ def send_to_api(self, input_text, conversation_id, selected_item, selected_branc
     combined_messages = chat_history_lines + branch_messages
     chat_memory = ai_module.construct_chat_memory(self, input_text, combined_messages)
     response = ai_module.get_response(self, chat_memory)
-    # check if the response is empty
 
     return response
 

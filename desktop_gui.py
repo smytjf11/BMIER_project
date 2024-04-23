@@ -185,7 +185,7 @@ class MainWindow(QMainWindow):
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             if message == "no model loaded":
                 msg.setText("The request failed. this is likely due to the model not being loaded. this module requires the "
-            + model + " api to be running. please check that the kobold api is running and try again.")
+            + model + " api to be running. please check that the "+ model + " api is running and try again.")
             if message == "blank":
                 msg.setText("The request failed. this is likely due an error causing the response from the model to be blank.")
             msg.setWindowTitle("Warning")
