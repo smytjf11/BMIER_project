@@ -52,7 +52,17 @@ def construct_chat_memory(self, input_text, combined_messages):
 
             return chat_memory
         else:
-            return input_text
+            # if chat history is disabled, return the input text as the chat memory
+            # make sure the imput is a valid list and a valid dictionary
+            chat_memory = [{"role": "user", "content": input_text}]
+
+
+            # strip out everything except the text
+            chat_memory = [message["content"] for message in chat_memory]
+            # the format for oobabooga is "text", "text", "text"
+            # so we need to add quotes around each message and then join them together with commas
+            #chat_memory = '", "'.join(chat_memory)
+            return chat_memory
 
 
 def get_response(self, chat_memory):
@@ -69,21 +79,31 @@ def get_response(self, chat_memory):
         # add quotes around the chat_memory
         # we just want the text and not the role
         #  
-        try:
-            
-            response = requests.post("http://127.0.0.1:5000/api/v1/generate", json={"prompt": str(chat_memory)}).json()
+        print ("chat_memory", chat_memory)
+        #try:
 
-            # Extract the text from the response directly
-            response = response["results"][0]["text"][2:]
-        except:
+
+
+        response = requests.post(
+            "http://127.0.0.1:5000/v1/completions",
+            headers={"Content-Type": "application/json"}, 
+            json={"prompt": chat_memory}
+        )
+        
+        print ("initial response", response)
+        assistant_message = response.json()["choices"][0]["text"]
+
+        
+        print(assistant_message)
+        '''except:
             # if the request fails, notify the user that the request failed
             print("The request failed. this is likely due to the model not being loaded. this module requires the oobabooga api to be running. please check that the oobabooga api is running, and try again.")
             # also warn using a warning message in the gui 
             # dont return an empty string because that can potentially corrupt the database
             # return an error message
             response = "no model loaded"
-        
-        return response
+        '''
+        return assistant_message
         # return the response
 
 def get_summary(prompt_messages):
@@ -118,21 +138,6 @@ def get_summary(prompt_messages):
             # return an error message
             return "no model loaded"
         
-
-
-
-def _get_history(full_history):
-    if full_history:
-        # Separate user and model messages
-        history = [
-            {"role": message["sender"], "content": message["text"]}
-            for message in full_history
-        ]
-    else:
-        history = []
-
-    return history
-
 
 def prepare_user_message(self, input_text):
         user_message = {
