@@ -59,9 +59,6 @@ def construct_chat_memory(self, input_text, combined_messages):
 
             # strip out everything except the text
             chat_memory = [message["content"] for message in chat_memory]
-            # the format for oobabooga is "text", "text", "text"
-            # so we need to add quotes around each message and then join them together with commas
-            #chat_memory = '", "'.join(chat_memory)
             return chat_memory
 
 
@@ -80,29 +77,29 @@ def get_response(self, chat_memory):
         # we just want the text and not the role
         #  
         print ("chat_memory", chat_memory)
-        #try:
+        try:
 
 
 
-        response = requests.post(
-            "http://127.0.0.1:5000/v1/completions",
-            headers={"Content-Type": "application/json"}, 
-            json={"prompt": chat_memory}
-        )
-        
-        print ("initial response", response)
-        assistant_message = response.json()["choices"][0]["text"]
+            response = requests.post(
+                "http://127.0.0.1:5000/v1/completions",
+                headers={"Content-Type": "application/json"}, 
+                json={"prompt": chat_memory}
+            )
+            
+            print ("initial response", response)
+            assistant_message = response.json()["choices"][0]["text"]
 
-        
-        print(assistant_message)
-        '''except:
+            
+            print(assistant_message)
+        except:
             # if the request fails, notify the user that the request failed
             print("The request failed. this is likely due to the model not being loaded. this module requires the oobabooga api to be running. please check that the oobabooga api is running, and try again.")
             # also warn using a warning message in the gui 
             # dont return an empty string because that can potentially corrupt the database
             # return an error message
-            response = "no model loaded"
-        '''
+            assistant_message = "no model loaded"
+        
         return assistant_message
         # return the response
 
