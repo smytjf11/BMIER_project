@@ -139,10 +139,15 @@ class MainWindow(QMainWindow):
 
         self.submit_button.clicked.connect(self.on_submit_button_clicked)
         buttons.addWidget(self.submit_button)
-        self.new_chat_button = QPushButton('New Chat')
+        # only add the new chat button if the conversations are enabled
+        if conversations_enabled == True:
+            # add a new chat button to the horizontal layout
+            self.new_chat_button = QPushButton('New Chat')
         # connect the new chat button to the new chat function in this file
-        self.new_chat_button.clicked.connect(self.new_chat)
-        buttons.addWidget(self.new_chat_button)
+            self.new_chat_button.clicked.connect(self.new_chat)
+            buttons.addWidget(self.new_chat_button)
+        
+        
 
         # add an archive button to the horizontal layout
         self.archive_button = QPushButton('Archive')

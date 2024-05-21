@@ -74,7 +74,6 @@ def get_response(self, chat_memory):
         # Send the POST request to the oobabooga API
         # add quotes around the chat_memory
         # we just want the text and not the role
-        #  json={"prompt": chat_memory, "ban_eos_token": True, "max_new_tokens": 2048, "min_new_tokens": 400}
         try:
 
 
@@ -119,14 +118,18 @@ def get_summary(prompt_messages):
         # turn the prompt messages into a string
         try:
             
-            response = requests.post("http://127.0.0.1:5000/api/v1/generate", 
-            json={
-            "prompt": str(prompt_messages)
-            }).json()
+            response = requests.post(
+                "http://127.0.0.1:5000/v1/completions",
+                headers={"Content-Type": "application/json"}, 
+                json={"prompt": str(prompt_messages), "max_tokens": config["model_max_tokens"], "stop_sequence": config["model_stop_sequence"], 
+                      }
+            )
+
+            
             # the response is a json object, so we need to parse it
-            print("response", response)
-            response = response["results"][0]["text"][2:]
-            return response
+            print ("initial response", response)
+            summary_message = response.json()["choices"][0]["text"]
+            return summary_message
 
         except:
              # if the request fails, notify the user that the summary creation failed
