@@ -224,9 +224,11 @@ class MainWindow(QMainWindow):
             self.warn("blank")
             return
         model_message = ai_module.prepare_model_message(self, response)
-
-        user_message_item = QtGui.QStandardItem(f"{user_message['sender']}: {user_message['text']}")
-        model_message_item = QtGui.QStandardItem(f"{model_message['sender']}: {model_message['text']}")
+        # add the user and model messages to the chat history tree view
+        # hard code the user and assistant names instead of using the valuse in the ai module
+        # the ai modules are api specific and this section isnt
+        user_message_item = QtGui.QStandardItem(f"user: {user_message['text']}")
+        model_message_item = QtGui.QStandardItem(f"assistant: {model_message['text']}")
         selected_index = self.chat_history.selectedIndexes()
 
         if selected_item:
