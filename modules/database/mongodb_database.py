@@ -261,12 +261,22 @@ def new_conversation_id(self):
 
 
 def add_conversation_id(self, new_conversation_id):
+    # check that the new_conversation_id is not in the list of conversation ids already
+    if new_conversation_id not in self.config_collection.find_one({"name": "dropdown_conversation_ids"})['conversation_ids']:
+
+
+    
     # add the new conversation id to the dropdown_conversation_ids document
-    self.config_collection.update_one(
-            {"name": "dropdown_conversation_ids"},
-            {"$push": {"conversation_ids":(new_conversation_id)}},
-            upsert=True
-        )
+
+        self.config_collection.update_one(
+                {"name": "dropdown_conversation_ids"},
+                {"$push": {"conversation_ids":(new_conversation_id)}},
+                upsert=True
+            )
+    else:
+        print("Conversation ID already exists")
+        return None
+    
 
 def create_branch(self, parent_conversation_id, selected_item_id):
     global conversation_id

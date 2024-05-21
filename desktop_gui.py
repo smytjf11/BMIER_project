@@ -379,14 +379,17 @@ class MainWindow(QMainWindow):
         database_module.add_conversation_id(self, new_conversation_id)
         
         # add the new conversation id to the dropdown menu 
-        self.conversation.addItem(new_conversation_id)
-        # set the dropdown menu to the new conversation id
-        self.conversation.setCurrentText(new_conversation_id)
-        
-        conversation_id = new_conversation_id
-        # switch the chat history to the new conversation id using the switch conversation function in this file
-        self.switch_conversation()
-        # set the global conversation id variable to the new conversation id
+        # check that it doesn't already exist first
+        if self.conversation.findText(new_conversation_id) == -1:
+
+            self.conversation.addItem(new_conversation_id)
+            # set the dropdown menu to the new conversation id
+            self.conversation.setCurrentText(new_conversation_id)
+            
+            conversation_id = new_conversation_id
+            # switch the chat history to the new conversation id using the switch conversation function in this file
+            self.switch_conversation()
+            # set the global conversation id variable to the new conversation id
 
 
     def archive(self, conversation_id):
