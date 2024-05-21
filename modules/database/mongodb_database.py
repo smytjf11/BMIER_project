@@ -11,6 +11,10 @@ def load_config():
     return config
 
 config = load_config()
+chat_history = config['chat_history']
+summary = config['summary']
+branching = config['branching']
+conversations = config['conversations']
 
 # a function to check if the conversation exists in the database
 
@@ -49,6 +53,9 @@ def get_dropdown_conversation_ids(self):
 
 def add_to_database(self, conversation_id, parent_conversation_id,  user_message, model_message):
     # print the values of the parameters
+    # check if if the sender for the model message is assistant if it is bot then change it to assistant
+    if model_message["sender"] == "bot":
+        model_message["sender"] = "assistant"
     conversation = self.collection.find_one({"conversation_id": conversation_id})
     if conversation:
         # If conversation exists, append the new messages to the messages array
@@ -86,6 +93,9 @@ def count_conversation_messages(self, conversation_id):
             # get the parent conversation document
             parent_conversation = self.collection.find_one({"conversation_id": parent_conversation_id, "is_archived": 0}, {"messages": 1, "_id": 0})
             # look for a message in the parent conversation document that has the conversation_id of the branch conversation as the value of the "text" field
+
+            if parent_conversation == None:
+                return 2
 
             for message in parent_conversation["messages"]:
                 if message["text"] == conversation_id:
@@ -251,14 +261,24 @@ def new_conversation_id(self):
 
 
 def add_conversation_id(self, new_conversation_id):
-    # add the new conversation id to the dropdown_conversation_ids document
-    self.config_collection.update_one(
-            {"name": "dropdown_conversation_ids"},
-            {"$push": {"conversation_ids":(new_conversation_id)}},
-            upsert=True
-        )
+    # check that the new_conversation_id is not in the list of conversation ids already
+    if new_conversation_id not in self.config_collection.find_one({"name": "dropdown_conversation_ids"})['conversation_ids']:
 
-def create_branch(self, parent_conversation_id, selected_item, selected_item_id):
+
+    
+    # add the new conversation id to the dropdown_conversation_ids document
+
+        self.config_collection.update_one(
+                {"name": "dropdown_conversation_ids"},
+                {"$push": {"conversation_ids":(new_conversation_id)}},
+                upsert=True
+            )
+    else:
+        print("Conversation ID already exists")
+        return None
+    
+
+def create_branch(self, parent_conversation_id, selected_item_id):
     global conversation_id
     # Fetch the parent conversation document from the get_conversation function in database_module.py
     parent_conversation = self.collection.find_one({"conversation_id": parent_conversation_id})
@@ -311,7 +331,7 @@ def create_branch(self, parent_conversation_id, selected_item, selected_item_id)
         }
         self.collection.update_one(
             {"conversation_id": parent_conversation_id},
-            {"$push": {"messages": {"$each": [new_message], "$position": message_index + 1}}}
+            {"$push": {"messages": {"$each": [new_message], "$position": message_index }}}
         )
     else:
         print("Selected item not found in the parent conversation's messages")

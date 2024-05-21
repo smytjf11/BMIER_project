@@ -1,0 +1,15 @@
+{
+    "chat_history": false,
+    "summary": true,
+    "branching": true,
+    "conversations": true,
+    "memory_length": 6,
+    "summary_update_interval": 6,
+    "ai_model" : "oobabooga",
+    "gui" : "browser",
+    "database" : "mongodb",
+    "model_max_tokens" : 5000,
+    "model_stop_sequence" : "\n"
+
+  }
+  
