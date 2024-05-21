@@ -7,6 +7,9 @@
     "summary_update_interval": 6,
     "ai_model" : "kobold",
     "gui" : "browser",
-    "database" : "mongodb"
+    "database" : "mongodb",
+    "model_max_tokens" : 5000,
+    "model_stop_sequence" : "\n"
+
   }
   

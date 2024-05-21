@@ -82,7 +82,7 @@ def get_response(self, chat_memory):
             response = requests.post(
                 "http://127.0.0.1:5000/v1/completions",
                 headers={"Content-Type": "application/json"}, 
-                json={"prompt": chat_memory, "max_tokens": 5000, "stop": ["\n"],
+                json={"prompt": chat_memory, "max_tokens": config["model_max_tokens"], "stop_sequence": config["model_stop_sequence"], 
                       }
             )
             
