@@ -39,7 +39,6 @@ def construct_chat_memory(self, input_text, combined_messages):
 
             # Add the user's input as a new message to the chat memory
             chat_memory.append({"role": "user", "content": input_text})
-            print ("chat_memory", chat_memory)
 
             # strip out everything except the text
 
@@ -75,8 +74,7 @@ def get_response(self, chat_memory):
         # Send the POST request to the oobabooga API
         # add quotes around the chat_memory
         # we just want the text and not the role
-        #  
-        print ("chat_memory", chat_memory)
+        #  json={"prompt": chat_memory, "ban_eos_token": True, "max_new_tokens": 2048, "min_new_tokens": 400}
         try:
 
 
@@ -84,7 +82,8 @@ def get_response(self, chat_memory):
             response = requests.post(
                 "http://127.0.0.1:5000/v1/completions",
                 headers={"Content-Type": "application/json"}, 
-                json={"prompt": chat_memory}
+                json={"prompt": chat_memory, "max_tokens": 5000, "stop": ["\n"],
+                      }
             )
             
             print ("initial response", response)
@@ -134,6 +133,21 @@ def get_summary(prompt_messages):
             print("The summary creation failed.this is likely due to the model not being loaded. this module requires the oobabooga api to be running. please check that the oobabooga api is running, and try again.")
             # return an error message
             return "no model loaded"
+        
+
+def convert_history_format(full_history):
+    if full_history:
+        # Separate user and model messages
+        history = [
+             # the database stores the messages with the role and the content named as "sender" and "text"
+            # so we need to change the names to "role" and "content" to match the format of the chat memory
+            {"role": message["sender"], "content": message["text"]}
+            for message in full_history
+        ]
+    else:
+        history = []
+
+    return history
         
 
 def prepare_user_message(self, input_text):

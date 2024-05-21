@@ -67,7 +67,7 @@ def get_summary(prompt_messages):
 
 
 
-def _get_history(full_history):
+def convert_history_format(full_history):
     if full_history:
         # Separate user and model messages
         history = [

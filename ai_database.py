@@ -81,7 +81,7 @@ def fetch_chat_history(self, conversation_id):
     # call the get document function to get the full history of the conversation
     full_history = database_module.get_document(self, conversation_id)
     
-    history = ai_module._get_history(full_history) 
+    history = ai_module.convert_history_format(full_history) 
     return history
 
 
