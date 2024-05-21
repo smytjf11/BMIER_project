@@ -225,8 +225,8 @@ class MainWindow(QMainWindow):
             return
         model_message = ai_module.prepare_model_message(self, response)
 
-        user_message_item = QtGui.QStandardItem(f"{user_message['text']}")
-        model_message_item = QtGui.QStandardItem(f"{model_message['text']}")
+        user_message_item = QtGui.QStandardItem(f"{user_message['sender']}: {user_message['text']}")
+        model_message_item = QtGui.QStandardItem(f"{model_message['sender']}: {model_message['text']}")
         selected_index = self.chat_history.selectedIndexes()
 
         if selected_item:

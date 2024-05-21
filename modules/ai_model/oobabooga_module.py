@@ -165,7 +165,7 @@ def prepare_user_message(self, input_text):
 def prepare_model_message(self, response):
     # use a dummy response for now
     model_message = {
-        "sender": "bot",
+        "sender": "assistant",
         "text": response,
         "timestamp": datetime.now().strftime("%H:%M:%S")
     }
